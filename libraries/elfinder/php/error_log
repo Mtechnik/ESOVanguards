@@ -1,0 +1,4 @@
+[25-Dec-2016 14:55:53 UTC] PHP Notice:  Undefined variable: w in /home/mtechnik81/public_html/libraries/elfinder/php/elFinderVolumeDriver.class.php on line 1445
+[25-Dec-2016 14:55:53 UTC] PHP Notice:  Undefined variable: h in /home/mtechnik81/public_html/libraries/elfinder/php/elFinderVolumeDriver.class.php on line 1445
+[25-Dec-2016 14:56:07 UTC] PHP Notice:  Undefined variable: w in /home/mtechnik81/public_html/libraries/elfinder/php/elFinderVolumeDriver.class.php on line 1445
+[25-Dec-2016 14:56:07 UTC] PHP Notice:  Undefined variable: h in /home/mtechnik81/public_html/libraries/elfinder/php/elFinderVolumeDriver.class.php on line 1445

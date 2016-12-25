@@ -1,0 +1,1 @@
+a:2:{s:15:"dynamictemplate";a:3:{s:4:"code";s:15:"dynamictemplate";s:7:"version";s:5:"2.2.0";s:6:"status";s:1:"1";}s:13:"raidlogimport";a:3:{s:4:"code";s:13:"raidlogimport";s:7:"version";s:7:"0.7.1.4";s:6:"status";s:1:"1";}}

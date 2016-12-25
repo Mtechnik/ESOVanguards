@@ -1,0 +1,1 @@
+a:1:{i:1;a:6:{s:4:"name";s:7:"Default";s:4:"desc";s:20:"Default MultiDKPPool";s:6:"sortid";s:1:"0";s:6:"events";a:0:{}s:13:"no_attendance";s:0:"";s:9:"itempools";a:1:{i:0;s:1:"1";}}}

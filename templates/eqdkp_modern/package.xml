@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install type="template" version="2.1.0.2">
+	<name>ESO Legionary Vanguards</name>
+	<author>Mtechnik</author>
+	<authorEmail></authorEmail>
+	<authorUrl>https://github.com/Mtechnik/ESOVanguards</authorUrl>
+	<creationDate>2015-12-25T09:10:38+00:00</creationDate>
+	<copyright>ESO Legionary Vanguards</copyright>
+	<license>AGPL v3</license>
+	<version>0.2.2</version>
+	<description></description>
+	<folder>eqdkp_modern</folder>
+</install>

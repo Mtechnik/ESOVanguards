@@ -1,0 +1,1 @@
+a:2:{i:1;a:3:{s:2:"id";i:1;s:4:"name";s:6:"Header";s:12:"wide_content";i:0;}i:2;a:3:{s:2:"id";i:2;s:4:"name";s:6:"Footer";s:12:"wide_content";i:0;}}

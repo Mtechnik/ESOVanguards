@@ -1,0 +1,1 @@
+a:14:{s:10:"guildrules";i:14;s:13:"privacypolicy";i:15;s:11:"legalnotice";i:16;s:4:"team";i:17;s:12:"new-features";i:1;s:7:"welcome";i:11;s:12:"index_events";i:7;s:11:"index_items";i:8;s:11:"index_raids";i:10;s:13:"calendarevent";i:12;s:14:"index_calendar";i:13;s:12:"index_roster";i:6;s:12:"index_points";i:9;s:15:"index_character";i:5;}

@@ -1,0 +1,1 @@
+a:9:{s:4:"team";a:1:{i:0;i:17;}s:6:"events";a:1:{i:0;i:7;}s:5:"items";a:1:{i:0;i:8;}s:5:"raids";a:1:{i:0;i:10;}s:13:"calendarevent";a:1:{i:0;i:12;}s:8:"calendar";a:1:{i:0;i:13;}s:6:"roster";a:1:{i:0;i:6;}s:6:"points";a:1:{i:0;i:9;}s:9:"character";a:1:{i:0;i:5;}}

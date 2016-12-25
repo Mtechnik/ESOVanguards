@@ -1,0 +1,1669 @@
+<?php
+if ($this->security()) {
+// IF S_NO_HEADER_FOOTER
+if ($this->_data['.'][0]['S_NO_HEADER_FOOTER']) { 
+echo '
+	<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+$(document).ready(function(){
+	$(\'#username\').change(function() {
+		var username = $(this).val();
+		if(username.length > 0){
+			$.post("' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Register/' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '&ajax=1' . ((isset($this->_data['.'][0]['AJAXEXTENSION_USER'])) ? $this->_data['.'][0]['AJAXEXTENSION_USER'] : '') . '", { username: username }, function(result){
+				if(result == \'true\'){
+					$("#error_username").hide();
+					$("#tick_username").show();
+				}else{
+					errortext	= $("#error_username").html();
+					$(\'#error_username\').html(errortext.replace(new RegExp("\\\\{0\\\\}", "g"), username));
+					$("#tick_username").hide();
+					$("#error_username").show();
+				}
+			});
+		}else{
+			$("#tick_username").hide();
+			$("#error_username").hide();
+		}
+	});
+
+	$(\'#useremail\').change(function() {
+		var user_email = $(this).val();
+		if(user_email.length > 0){
+			$.post("' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Register/' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '&ajax=1' . ((isset($this->_data['.'][0]['AJAXEXTENSION_USER'])) ? $this->_data['.'][0]['AJAXEXTENSION_USER'] : '') . '", { user_email: user_email }, function(result){
+				if(result == \'true\'){
+					$("#error_email").hide();
+					$("#tick_mail").show();
+				}else{
+					errortext	= $("#error_email").html();
+					$(\'#error_email\').html(errortext.replace(new RegExp("\\\\{0\\\\}", "g"), user_email));
+					$("#tick_mail").hide();
+					$("#error_email").show();
+				}
+			});
+		}else{
+			$("#tick_mail").hide();
+			$("#error_email").hide();
+		}
+	});
+
+	';// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+echo '
+	$(\'.changepermcolor\').change(function() {
+
+		if($(this).prop(\'checked\')){
+			$(\'#span_\'+this.id).removeClass("negative");
+			$(\'#span_\'+this.id).addClass(\'positive\');
+		}else{
+			$(\'#span_\'+this.id).addClass("negative");
+			$(\'#span_\'+this.id).removeClass(\'positive\');
+		}
+	});
+
+	var user_perms = new Array(\'\'';// BEGIN user_permissions
+$_user_permissions_count = (isset($this->_data['user_permissions.'])) ?  sizeof($this->_data['user_permissions.']) : 0;
+if ($_user_permissions_count) {
+for ($_user_permissions_i = 0; $_user_permissions_i < $_user_permissions_count; $_user_permissions_i++)
+{
+echo ',\'' . ((isset($this->_data['user_permissions.'][$_user_permissions_i]['NAME'])) ? $this->_data['user_permissions.'][$_user_permissions_i]['NAME'] : '') . '\'';}}
+// END user_permissions
+echo ');
+	var group_perms = new Array();
+	';// BEGIN group_permissions
+$_group_permissions_count = (isset($this->_data['group_permissions.'])) ?  sizeof($this->_data['group_permissions.']) : 0;
+if ($_group_permissions_count) {
+for ($_group_permissions_i = 0; $_group_permissions_i < $_group_permissions_count; $_group_permissions_i++)
+{
+echo '
+	group_perms[' . ((isset($this->_data['group_permissions.'][$_group_permissions_i]['KEY'])) ? $this->_data['group_permissions.'][$_group_permissions_i]['KEY'] : '') . '] = new Array(\'\'';// BEGIN group_permission_row
+$_group_permission_row_count = (isset($this->_data['group_permissions.'][$_group_permissions_i]['group_permission_row.'])) ? sizeof($this->_data['group_permissions.'][$_group_permissions_i]['group_permission_row.']) : 0;
+if ($_group_permission_row_count) {
+for ($_group_permission_row_i = 0; $_group_permission_row_i < $_group_permission_row_count; $_group_permission_row_i++)
+{
+echo ',\'' . ((isset($this->_data['group_permissions.'][$_group_permissions_i]['group_permission_row.'][$_group_permission_row_i]['NAME'])) ? $this->_data['group_permissions.'][$_group_permissions_i]['group_permission_row.'][$_group_permission_row_i]['NAME'] : '') . '\'';}}
+// END group_permission_row
+echo ');
+	';}}
+// END group_permissions
+echo '
+	$("#dw_user_groups")
+		.multiselect()
+		.bind("multiselectclick multiselectcheckall multiselectuncheckall", function( event, ui ){
+			var checkedValues = $.map($(this).multiselect("getChecked"), function( input ){
+				return input.value;
+			});
+			reset_permissions();
+			set_user_permissions();
+			console.log(checkedValues);
+			
+			$.each(checkedValues, function(index, value) {
+				set_group_permissions(value);
+			});
+		})
+		.triggerHandler("multiselectclick"); // trigger above logic when page first loads
+
+	function reset_permissions(){
+		$(\'.changepermcolor\').prop("checked", false);
+		$(\'.changepermcolor\').prop("disabled", false);
+		$(\'.perm_text\').removeClass("positive");
+		$(\'.perm_text\').addClass("negative");
+	}
+
+	function set_user_permissions(){
+		$.each(user_perms, function(index, value) {
+			if (value != ""){
+				$(\'#span_cb_\'+value).removeClass(\'negative\');
+				$(\'#span_cb_\'+value).addClass(\'positive\');
+				$(\'#cb_\'+value).prop(\'checked\', true);
+			}
+		});
+	}
+
+	function set_group_permissions(groupid){
+		$.each(group_perms[groupid], function(index, value) {
+			if (value != ""){
+				$(\'#span_cb_\'+value).removeClass(\'negative\');
+				$(\'#span_cb_\'+value).addClass(\'positive\');
+				$(\'#cb_\'+value).prop(\'checked\', true);
+				$(\'#cb_\'+value).prop(\'disabled\', true);
+			}
+		});
+	}
+	';// ENDIF
+}
+echo '
+
+	// possible fix for double-click problem
+	// http://forum.jquery.com/topic/validate-plugin-and-remote-have-to-submit-twice
+	$.ajaxSetup ({
+		async: false
+	});
+});
+//]]>
+</script>
+
+';// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+echo '
+<div class="breadcrumb-container">
+	<ul class="breamcrumb">
+		<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '" title="' . ((isset($this->_data['.'][0]['L_home'])) ? $this->_data['.'][0]['L_home'] : (($this->lang('home')) ? $this->lang('home') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'home'))) . '         }')) . '"><i class="fa fa-home"></i></a></li>
+		<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_ROOT_PATH'])) ? $this->_data['.'][0]['EQDKP_ROOT_PATH'] : '') . 'admin/' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '">' . ((isset($this->_data['.'][0]['L_menu_admin_panel'])) ? $this->_data['.'][0]['L_menu_admin_panel'] : (($this->lang('menu_admin_panel')) ? $this->lang('menu_admin_panel') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'menu_admin_panel'))) . '         }')) . '</a>
+		<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_ROOT_PATH'])) ? $this->_data['.'][0]['EQDKP_ROOT_PATH'] : '') . 'admin/manage_users.php' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '">' . ((isset($this->_data['.'][0]['L_manage_users'])) ? $this->_data['.'][0]['L_manage_users'] : (($this->lang('manage_users')) ? $this->lang('manage_users') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'manage_users'))) . '         }')) . '</a></li>
+		<li class="current"><a>' . ((isset($this->_data['.'][0]['USERNAME'])) ? $this->_data['.'][0]['USERNAME'] : '') . '</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
+<div class="contentHeader">
+	<h1 class="contentTitle">' . ((isset($this->_data['.'][0]['L_manage_users'])) ? $this->_data['.'][0]['L_manage_users'] : (($this->lang('manage_users')) ? $this->lang('manage_users') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'manage_users'))) . '         }')) . ': ' . ((isset($this->_data['.'][0]['USERNAME'])) ? $this->_data['.'][0]['USERNAME'] : '') . '</h1>
+</div>
+';// ELSE
+} else {
+echo '
+<div class="breadcrumb-container">
+	<ul class="breamcrumb">
+		<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '" title="' . ((isset($this->_data['.'][0]['L_home'])) ? $this->_data['.'][0]['L_home'] : (($this->lang('home')) ? $this->lang('home') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'home'))) . '         }')) . '"><i class="fa fa-home"></i></a></li>
+		<li class="current"><a>' . ((isset($this->_data['.'][0]['L_settings_title'])) ? $this->_data['.'][0]['L_settings_title'] : (($this->lang('settings_title')) ? $this->lang('settings_title') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'settings_title'))) . '         }')) . '</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
+';// ENDIF
+}
+echo '
+
+<form method="post" action="' . ((isset($this->_data['.'][0]['ACTION'])) ? $this->_data['.'][0]['ACTION'] : '') . '" name="' . ((isset($this->_data['.'][0]['FORM_ID'])) ? $this->_data['.'][0]['FORM_ID'] : '') . '" id="' . ((isset($this->_data['.'][0]['FORM_ID'])) ? $this->_data['.'][0]['FORM_ID'] : '') . '" class="' . ((isset($this->_data['.'][0]['FORMCLASS'])) ? $this->_data['.'][0]['FORMCLASS'] : '') . '">
+<div class="content">
+	<div id="usersettings_tabs">
+
+		<ul>
+			';// BEGIN tabs
+$_tabs_count = (isset($this->_data['tabs.'])) ?  sizeof($this->_data['tabs.']) : 0;
+if ($_tabs_count) {
+for ($_tabs_i = 0; $_tabs_i < $_tabs_count; $_tabs_i++)
+{
+echo ' <li><a href=\'#fragment-' . ((isset($this->_data['tabs.'][$_tabs_i]['ID'])) ? $this->_data['tabs.'][$_tabs_i]['ID'] : '') . '\'><span>' . ((isset($this->_data['tabs.'][$_tabs_i]['NAME'])) ? $this->_data['tabs.'][$_tabs_i]['NAME'] : '') . '</span></a></li>';}}
+// END tabs
+// BEGIN plugin_settings_row
+$_plugin_settings_row_count = (isset($this->_data['plugin_settings_row.'])) ?  sizeof($this->_data['plugin_settings_row.']) : 0;
+if ($_plugin_settings_row_count) {
+for ($_plugin_settings_row_i = 0; $_plugin_settings_row_i < $_plugin_settings_row_count; $_plugin_settings_row_i++)
+{
+echo '<li><a href=\'#' . ((isset($this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['KEY'])) ? $this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['KEY'] : '') . '\'>' . ((isset($this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['ICON'])) ? $this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['ICON'] : '') . ' ' . ((isset($this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['PLUGIN'])) ? $this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['PLUGIN'] : '') . '</a></li>';}}
+// END plugin_settings_row
+// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+echo '
+			<li><a href=\'#permissions\'>' . ((isset($this->_data['.'][0]['L_permissions'])) ? $this->_data['.'][0]['L_permissions'] : (($this->lang('permissions')) ? $this->lang('permissions') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'permissions'))) . '         }')) . '</a></li>
+			<li><a href=\'#members\'>' . ((isset($this->_data['.'][0]['L_associated_members'])) ? $this->_data['.'][0]['L_associated_members'] : (($this->lang('associated_members')) ? $this->lang('associated_members') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'associated_members'))) . '         }')) . '</a></li>
+			';// ENDIF
+}
+echo '
+		</ul>
+
+		<input type="hidden" name="old_username" value="' . ((isset($this->_data['.'][0]['USERNAME'])) ? $this->_data['.'][0]['USERNAME'] : '') . '" />
+		<input type="hidden" name="user_id[]" value="' . ((isset($this->_data['.'][0]['USERID'])) ? $this->_data['.'][0]['USERID'] : '') . '" />
+		<input type="hidden" name="u" value="' . ((isset($this->_data['.'][0]['USERID'])) ? $this->_data['.'][0]['USERID'] : '') . '" />
+
+		';// BEGIN tabs
+$_tabs_count = (isset($this->_data['tabs.'])) ?  sizeof($this->_data['tabs.']) : 0;
+if ($_tabs_count) {
+for ($_tabs_i = 0; $_tabs_i < $_tabs_count; $_tabs_i++)
+{
+echo '
+		<div id="fragment-' . ((isset($this->_data['tabs.'][$_tabs_i]['ID'])) ? $this->_data['tabs.'][$_tabs_i]['ID'] : '') . '">
+			';// BEGIN fieldsets
+$_fieldsets_count = (isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'])) ? sizeof($this->_data['tabs.'][$_tabs_i]['fieldsets.']) : 0;
+if ($_fieldsets_count) {
+for ($_fieldsets_i = 0; $_fieldsets_i < $_fieldsets_count; $_fieldsets_i++)
+{
+// IF tabs.fieldsets.INFO
+if ($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['INFO']) { 
+echo '
+			<div class="infobox infobox-large infobox-blue clearfix">
+				<i class="fa fa-info-circle fa-4x pull-left"></i> ' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['INFO'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['INFO'] : '') . '
+			</div>
+
+			';// ENDIF
+}
+echo '
+
+			<fieldset class="settings">
+				<legend>' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['NAME'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['NAME'] : '') . '</legend>
+
+				';// BEGIN fields
+$_fields_count = (isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'])) ? sizeof($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.']) : 0;
+if ($_fields_count) {
+for ($_fields_i = 0; $_fields_i < $_fields_count; $_fields_i++)
+{
+echo '
+				<dl>
+					<dt><label>' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['NAME'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['NAME'] : '') . '</label><br /><span>' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['HELP'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['HELP'] : '') . '</span></dt>
+					<dd>' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['FIELD'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['FIELD'] : '') . '' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['TEXT'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['TEXT'] : '') . '</dd>
+				</dl>
+				';}}
+// END fields
+echo '
+			</fieldset>
+			';}}
+// END fieldsets
+echo '
+		</div>
+		';}}
+// END tabs
+// BEGIN plugin_usersettings_div
+$_plugin_usersettings_div_count = (isset($this->_data['plugin_usersettings_div.'])) ?  sizeof($this->_data['plugin_usersettings_div.']) : 0;
+if ($_plugin_usersettings_div_count) {
+for ($_plugin_usersettings_div_i = 0; $_plugin_usersettings_div_i < $_plugin_usersettings_div_count; $_plugin_usersettings_div_i++)
+{
+echo '
+		<div id="' . ((isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['KEY'])) ? $this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['KEY'] : '') . '">
+			<fieldset class="settings">
+				';// BEGIN plugin_usersettings
+$_plugin_usersettings_count = (isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'])) ? sizeof($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.']) : 0;
+if ($_plugin_usersettings_count) {
+for ($_plugin_usersettings_i = 0; $_plugin_usersettings_i < $_plugin_usersettings_count; $_plugin_usersettings_i++)
+{
+// IF plugin_usersettings_div.plugin_usersettings.S_TH
+if ($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['S_TH']) { 
+echo '
+						</fieldset><fieldset class="settings">
+						<legend>' . ((isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['NAME'])) ? $this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['NAME'] : '') . '</legend>
+					';// ELSE
+} else {
+echo '
+						<dl>
+							<dt>
+								<label>' . ((isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['NAME'])) ? $this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['NAME'] : '') . '</label><br /><span>' . ((isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['HELP'])) ? $this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['HELP'] : '') . '</span>
+							</dt>
+							<dd>' . ((isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['FIELD'])) ? $this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['FIELD'] : '') . '</dd>
+						</dl>
+					';// ENDIF
+}
+}}
+// END plugin_usersettings
+echo '
+			</fieldset>
+		</div>
+		';}}
+// END plugin_usersettings_div
+// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+echo '
+		<div id="permissions">
+			<div class="infobox infobox-large infobox-blue clearfix">
+				<i class="fa fa-info-circle fa-4x pull-left"></i> <input type="checkbox" checked="checked" disabled="disabled" />' . ((isset($this->_data['.'][0]['L_s_group_note'])) ? $this->_data['.'][0]['L_s_group_note'] : (($this->lang('s_group_note')) ? $this->lang('s_group_note') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 's_group_note'))) . '         }')) . '
+			</div>
+			<fieldset class="settings">
+				<legend>' . ((isset($this->_data['.'][0]['L_account_enabled'])) ? $this->_data['.'][0]['L_account_enabled'] : (($this->lang('account_enabled')) ? $this->lang('account_enabled') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'account_enabled'))) . '         }')) . '</legend>
+
+				<dl>
+					<dt><label>' . ((isset($this->_data['.'][0]['L_account_enabled'])) ? $this->_data['.'][0]['L_account_enabled'] : (($this->lang('account_enabled')) ? $this->lang('account_enabled') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'account_enabled'))) . '         }')) . '</label></dt>
+					<dd>' . ((isset($this->_data['.'][0]['ACTIVE_RADIO'])) ? $this->_data['.'][0]['ACTIVE_RADIO'] : '') . '</dd>
+				</dl>
+
+			</fieldset>
+			<fieldset class="settings">
+				<legend>' . ((isset($this->_data['.'][0]['L_user_groups'])) ? $this->_data['.'][0]['L_user_groups'] : (($this->lang('user_groups')) ? $this->lang('user_groups') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'user_groups'))) . '         }')) . '</legend>
+
+				<dl>
+					<dt><label>' . ((isset($this->_data['.'][0]['L_user_groups'])) ? $this->_data['.'][0]['L_user_groups'] : (($this->lang('user_groups')) ? $this->lang('user_groups') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'user_groups'))) . '         }')) . '</label></dt>
+					<dd>' . ((isset($this->_data['.'][0]['USER_GROUP_SELECT'])) ? $this->_data['.'][0]['USER_GROUP_SELECT'] : '') . '</dd>
+				</dl>
+
+			</fieldset>
+				';// IF S_PERM_PERMISSION
+if ($this->_data['.'][0]['S_PERM_PERMISSION']) { 
+echo '
+				<div id="permission_tabs">
+				<ul>
+					<li><a href=\'#user_perms\'><span>' . ((isset($this->_data['.'][0]['L_user_permissions'])) ? $this->_data['.'][0]['L_user_permissions'] : (($this->lang('user_permissions')) ? $this->lang('user_permissions') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'user_permissions'))) . '         }')) . '</span></a></li>
+					<li><a href=\'#admin_perms\'><span class="adminicon">' . ((isset($this->_data['.'][0]['L_admin_permissions'])) ? $this->_data['.'][0]['L_admin_permissions'] : (($this->lang('admin_permissions')) ? $this->lang('admin_permissions') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'admin_permissions'))) . '         }')) . '</span></a></li>
+				</ul>
+
+				<div id="user_perms">
+					';// BEGIN u_permissions_row
+$_u_permissions_row_count = (isset($this->_data['u_permissions_row.'])) ?  sizeof($this->_data['u_permissions_row.']) : 0;
+if ($_u_permissions_row_count) {
+for ($_u_permissions_row_i = 0; $_u_permissions_row_i < $_u_permissions_row_count; $_u_permissions_row_i++)
+{
+echo '
+					<fieldset class="settings mediumsettings">
+						<legend>' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['ICON'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['ICON'] : '') . ' ' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['GROUP'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['GROUP'] : '') . '</legend>
+						';// BEGIN check_group
+$_check_group_count = (isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'])) ? sizeof($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.']) : 0;
+if ($_check_group_count) {
+for ($_check_group_i = 0; $_check_group_i < $_check_group_count; $_check_group_i++)
+{
+// IF not u_permissions_row.check_group.S_SUPERADMIN_PERM
+if (! $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['S_SUPERADMIN_PERM']) { 
+echo '
+						<div class="permissions">
+							<label title="' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '">
+								';// IF u_permissions_row.check_group.S_IS_GROUP
+if ($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['S_IS_GROUP']) { 
+echo '
+								<input type="checkbox" name="' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" value="Y" ' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'] : '') . ' disabled="disabled" class="changepermcolor" id="cb_' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" />
+								';// ELSE
+} else {
+echo '
+								<input type="checkbox" name="' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" value="Y" ' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'] : '') . ' class="changepermcolor" id="cb_' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '"/>
+								';// ENDIF
+}
+echo '
+								<span id="span_cb_' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" class="perm_text ' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CLASS'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CLASS'] : '') . '">' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['TEXT'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['TEXT'] : '') . '</span>
+							</label>
+						</div>
+						';// ENDIF
+}
+}}
+// END check_group
+echo '
+					</fieldset>
+					';}}
+// END u_permissions_row
+echo '
+				</div>
+
+				<div id="admin_perms">
+					';// BEGIN a_permissions_row
+$_a_permissions_row_count = (isset($this->_data['a_permissions_row.'])) ?  sizeof($this->_data['a_permissions_row.']) : 0;
+if ($_a_permissions_row_count) {
+for ($_a_permissions_row_i = 0; $_a_permissions_row_i < $_a_permissions_row_count; $_a_permissions_row_i++)
+{
+echo '
+					<fieldset class="settings mediumsettings">
+						<legend>' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['ICON'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['ICON'] : '') . ' ' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['GROUP'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['GROUP'] : '') . '</legend>
+						';// BEGIN check_group
+$_check_group_count = (isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'])) ? sizeof($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.']) : 0;
+if ($_check_group_count) {
+for ($_check_group_i = 0; $_check_group_i < $_check_group_count; $_check_group_i++)
+{
+echo '
+						<div class="permissions">
+							<label>
+								';// IF a_permissions_row.check_group.S_IS_GROUP
+if ($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['S_IS_GROUP']) { 
+echo '
+								<input type="checkbox" name="' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" value="Y" ' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'] : '') . ' disabled="disabled" class="changepermcolor" id="cb_' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" />
+								';// ELSE
+} else {
+echo '
+								<input type="checkbox" name="' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" value="Y" ' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'] : '') . ' class="changepermcolor" id="cb_' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '"/>
+								';// ENDIF
+}
+echo '
+								<span id="span_cb_' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" class="perm_text ' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CLASS'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CLASS'] : '') . '">' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['TEXT'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['TEXT'] : '') . '</span>
+							</label>
+						</div>
+						';}}
+// END check_group
+echo '
+					</fieldset>
+					';}}
+// END a_permissions_row
+echo '
+				</div>
+			</div>
+			';// ENDIF
+}
+echo '
+		</div>
+
+		';// IF S_MU_TABLE
+if ($this->_data['.'][0]['S_MU_TABLE']) { 
+echo '
+		<div id="members">
+			<fieldset class="settings">
+				<legend>' . ((isset($this->_data['.'][0]['L_associated_members'])) ? $this->_data['.'][0]['L_associated_members'] : (($this->lang('associated_members')) ? $this->lang('associated_members') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'associated_members'))) . '         }')) . '</legend>
+
+				<dl>
+					<dt>
+						<label>' . ((isset($this->_data['.'][0]['L_associated_members'])) ? $this->_data['.'][0]['L_associated_members'] : (($this->lang('associated_members')) ? $this->lang('associated_members') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'associated_members'))) . '         }')) . '</label><br />
+					</dt>
+					<dd>
+						' . ((isset($this->_data['.'][0]['JS_CONNECTIONS'])) ? $this->_data['.'][0]['JS_CONNECTIONS'] : '') . ' ' . ((isset($this->_data['.'][0]['FV_MEMBER_ID'])) ? $this->_data['.'][0]['FV_MEMBER_ID'] : '') . '
+					</dd>
+				</dl>
+			</fieldset>
+		</div>
+		';// ENDIF
+}
+// ENDIF
+}
+echo '
+	</div>
+		<div class="contentFooter">
+			<button class="mainoption" type="submit" name="submit" ><i class="fa fa-check"></i>' . ((isset($this->_data['.'][0]['L_uc_connectme'])) ? $this->_data['.'][0]['L_uc_connectme'] : (($this->lang('uc_connectme')) ? $this->lang('uc_connectme') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'uc_connectme'))) . '         }')) . '</button>
+			<button class="liteoption" type="reset" name="reset"><i class="fa fa-trash-o"></i>' . ((isset($this->_data['.'][0]['L_reset'])) ? $this->_data['.'][0]['L_reset'] : (($this->lang('reset')) ? $this->lang('reset') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'reset'))) . '         }')) . '</button>
+			';// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+// IF not S_PROTECT_USER
+if (! $this->_data['.'][0]['S_PROTECT_USER']) { 
+echo '
+			<button class="liteoption cancel" type="button" name="del" onclick="delete_warning(' . ((isset($this->_data['.'][0]['USERID'])) ? $this->_data['.'][0]['USERID'] : '') . ');" id="delete_button"><i class="fa fa-times"></i>' . ((isset($this->_data['.'][0]['L_delete'])) ? $this->_data['.'][0]['L_delete'] : (($this->lang('delete')) ? $this->lang('delete') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'delete'))) . '         }')) . '</button>
+			';// ENDIF
+}
+echo '
+			<button class="mainoption cancel" type="submit" name=""><i class="fa fa-chevron-left"></i>' . ((isset($this->_data['.'][0]['L_back'])) ? $this->_data['.'][0]['L_back'] : (($this->lang('back')) ? $this->lang('back') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'back'))) . '         }')) . '</button>
+			';// ENDIF
+}
+echo '
+			
+		</div>
+	</div>
+
+	' . ((isset($this->_data['.'][0]['HIDDEN_FIELDS'])) ? $this->_data['.'][0]['HIDDEN_FIELDS'] : '') . '
+	' . ((isset($this->_data['.'][0]['CSRF_TOKEN'])) ? $this->_data['.'][0]['CSRF_TOKEN'] : '') . '
+</form>
+';// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+echo '' . ((isset($this->_data['.'][0]['JS_TAB_SELECT'])) ? $this->_data['.'][0]['JS_TAB_SELECT'] : '') . '';// ENDIF
+}
+// ELSE
+} else {
+echo '<!DOCTYPE html>
+<html lang="' . ((isset($this->_data['.'][0]['L_XML_LANG'])) ? $this->_data['.'][0]['L_XML_LANG'] : (($this->lang('XML_LANG')) ? $this->lang('XML_LANG') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'XML_LANG'))) . '         }')) . '">
+	<head>
+	<!--
+
+	This website is powered by EQDKP-PLUS Gamers CMS :: Licensed under AGPL v3.0
+	Copyright © 2006-2016 by EQDKP-PLUS Dev Team :: Plugins are copyright of their authors
+	Visit the project website at http://eqdkp-plus.eu for more information
+
+	//-->
+		<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=9" /><![endif]-->
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="keywords" content="' . ((isset($this->_data['.'][0]['META_KEYWORDS'])) ? $this->_data['.'][0]['META_KEYWORDS'] : '') . '" />
+		<meta name="description" content="' . ((isset($this->_data['.'][0]['META_DESCRIPTION'])) ? $this->_data['.'][0]['META_DESCRIPTION'] : '') . '" />
+		<meta name="author" content="' . ((isset($this->_data['.'][0]['GUILD_TAG'])) ? $this->_data['.'][0]['GUILD_TAG'] : '') . '" />
+		';// IF S_REPONSIVE
+if ($this->_data['.'][0]['S_REPONSIVE']) { 
+echo '
+		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+		';// ENDIF
+}
+echo '
+		' . ((isset($this->_data['.'][0]['META'])) ? $this->_data['.'][0]['META'] : '') . '
+		' . ((isset($this->_data['.'][0]['LINK'])) ? $this->_data['.'][0]['LINK'] : '') . '
+		<title>' . ((isset($this->_data['.'][0]['PAGE_TITLE'])) ? $this->_data['.'][0]['PAGE_TITLE'] : '') . '</title>
+		' . ((isset($this->_data['.'][0]['CSS_FILES'])) ? $this->_data['.'][0]['CSS_FILES'] : '') . '
+		' . ((isset($this->_data['.'][0]['JS_FILES'])) ? $this->_data['.'][0]['JS_FILES'] : '') . '
+		<link rel="shortcut icon" href="' . ((isset($this->_data['.'][0]['TEMPLATE_PATH'])) ? $this->_data['.'][0]['TEMPLATE_PATH'] : '') . '/images/favicon.png" type="image/png" />
+		<link rel="icon" href="' . ((isset($this->_data['.'][0]['TEMPLATE_PATH'])) ? $this->_data['.'][0]['TEMPLATE_PATH'] : '') . '/images/favicon.png" type="image/png" />
+		<link rel="apple-touch-icon" href="' . ((isset($this->_data['.'][0]['TEMPLATE_PATH'])) ? $this->_data['.'][0]['TEMPLATE_PATH'] : '') . '/images/apple-touch-icon.png" />
+		' . ((isset($this->_data['.'][0]['RSS_FEEDS'])) ? $this->_data['.'][0]['RSS_FEEDS'] : '') . '
+		';echo '
+		<style type="text/css">
+			' . ((isset($this->_data['.'][0]['CSS_CODE'])) ? $this->_data['.'][0]['CSS_CODE'] : '') . '
+			';// IF T_BACKGROUND_TYPE > 0
+if ($this->_data['.'][0]['T_BACKGROUND_TYPE'] > 0) { 
+echo '
+			body {
+				background:#000000 url(\'' . ((isset($this->_data['.'][0]['TEMPLATE_BACKGROUND'])) ? $this->_data['.'][0]['TEMPLATE_BACKGROUND'] : '') . '\') no-repeat center top;
+				background-attachment: ' . ((isset($this->_data['.'][0]['T_BACKGROUND_POSITION'])) ? $this->_data['.'][0]['T_BACKGROUND_POSITION'] : '') . ';
+			}
+			
+			#wrapper header {
+				background: none !important;
+			}
+			';// ENDIF
+}
+echo '
+		</style>
+		
+		<script type="text/javascript">
+			//<![CDATA[
+			' . ((isset($this->_data['.'][0]['JS_CODE'])) ? $this->_data['.'][0]['JS_CODE'] : '') . '
+			//]]>
+		</script>
+	</head>
+	<body id="top" data-template="' . ((isset($this->_data['.'][0]['TEMPLATE_CLASS'])) ? $this->_data['.'][0]['TEMPLATE_CLASS'] : '') . '" class="';// IF S_REPONSIVE
+if ($this->_data['.'][0]['S_REPONSIVE']) { 
+echo 'responsive ';// ENDIF
+}
+// IF not S_NORMAL_HEADER
+if (! $this->_data['.'][0]['S_NORMAL_HEADER']) { 
+echo 'simple-header';// ENDIF
+}
+echo ' ' . ((isset($this->_data['.'][0]['BROWSER_CLASS'])) ? $this->_data['.'][0]['BROWSER_CLASS'] : '') . '';// IF T_PORTAL_WIDTH
+if ($this->_data['.'][0]['T_PORTAL_WIDTH']) { 
+echo ' fixed_width';// ENDIF
+}
+// IF S_IN_ADMIN
+if ($this->_data['.'][0]['S_IN_ADMIN']) { 
+echo ' admin';// ELSE
+} else {
+echo ' frontend';// ENDIF
+}
+echo '">
+		';echo '
+		
+		' . ((isset($this->_data['.'][0]['STATIC_HTMLCODE'])) ? $this->_data['.'][0]['STATIC_HTMLCODE'] : '') . '
+		';// IF S_NORMAL_HEADER
+if ($this->_data['.'][0]['S_NORMAL_HEADER']) { 
+echo '
+		<header>
+			<div id="personalArea">
+				<div id="personalAreaInner">
+				<div id="personalAreaUser">
+					';// IF not S_LOGGED_IN
+if (! $this->_data['.'][0]['S_LOGGED_IN']) { 
+echo '
+					<ul>
+						<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Login' . ((isset($this->_data['.'][0]['SEO_EXTENSION'])) ? $this->_data['.'][0]['SEO_EXTENSION'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '" class="openLoginModal" onclick="return false;"><i class="fa fa-sign-in fa-lg"></i> ' . ((isset($this->_data['.'][0]['L_login'])) ? $this->_data['.'][0]['L_login'] : (($this->lang('login')) ? $this->lang('login') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'login'))) . '         }')) . '</a></li>
+						';// IF U_REGISTER != ""
+if ($this->_data['.'][0]['U_REGISTER'] != "") { 
+echo '<li>' . ((isset($this->_data['.'][0]['U_REGISTER'])) ? $this->_data['.'][0]['U_REGISTER'] : '') . '</li>';// ENDIF
+}
+echo '
+						
+						<li>
+							<div class="langswitch-tooltip-container">
+								<a href="#" class="langswitch-tooltip-trigger tooltip-trigger" data-tooltip="langswitch-tooltip">' . ((isset($this->_data['.'][0]['USER_LANGUAGE_NAME'])) ? $this->_data['.'][0]['USER_LANGUAGE_NAME'] : '') . '</a>
+								<ul class="dropdown-menu langswitch-tooltip" role="menu" id="langswitch-tooltip">
+									';// BEGIN languageswitcher_row
+$_languageswitcher_row_count = (isset($this->_data['languageswitcher_row.'])) ?  sizeof($this->_data['languageswitcher_row.']) : 0;
+if ($_languageswitcher_row_count) {
+for ($_languageswitcher_row_i = 0; $_languageswitcher_row_i < $_languageswitcher_row_count; $_languageswitcher_row_i++)
+{
+echo '
+									<li><a href="' . ((isset($this->_data['languageswitcher_row.'][$_languageswitcher_row_i]['LINK'])) ? $this->_data['languageswitcher_row.'][$_languageswitcher_row_i]['LINK'] : '') . '">' . ((isset($this->_data['languageswitcher_row.'][$_languageswitcher_row_i]['LANGNAME'])) ? $this->_data['languageswitcher_row.'][$_languageswitcher_row_i]['LANGNAME'] : '') . '</a></li>
+									';}}
+// END languageswitcher_row
+echo '
+								</ul>
+							</div>
+						</li>
+						
+						';// BEGIN personal_area_addition
+$_personal_area_addition_count = (isset($this->_data['personal_area_addition.'])) ?  sizeof($this->_data['personal_area_addition.']) : 0;
+if ($_personal_area_addition_count) {
+for ($_personal_area_addition_i = 0; $_personal_area_addition_i < $_personal_area_addition_count; $_personal_area_addition_i++)
+{
+echo '
+						<li>' . ((isset($this->_data['personal_area_addition.'][$_personal_area_addition_i]['TEXT'])) ? $this->_data['personal_area_addition.'][$_personal_area_addition_i]['TEXT'] : '') . '</li>
+						';}}
+// END personal_area_addition
+echo '
+					</ul>
+					
+					';// ELSE
+} else {
+echo '
+						<ul>
+							<li>
+								<div class="user-tooltip-container">
+									<a href="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Settings' . ((isset($this->_data['.'][0]['SEO_EXTENSION'])) ? $this->_data['.'][0]['SEO_EXTENSION'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '" class="user-tooltip-trigger tooltip-trigger" data-tooltip="user-tooltip"><span class="user-avatar user-avatar-border user-avatar-smallest"><img src="' . ((isset($this->_data['.'][0]['USER_AVATAR'])) ? $this->_data['.'][0]['USER_AVATAR'] : '') . '" alt="' . ((isset($this->_data['.'][0]['USER_NAME'])) ? $this->_data['.'][0]['USER_NAME'] : '') . '"/></span> <span class="hiddenSmartphone">' . ((isset($this->_data['.'][0]['USER_NAME'])) ? $this->_data['.'][0]['USER_NAME'] : '') . '';// IF USER_IS_AWAY
+if ($this->_data['.'][0]['USER_IS_AWAY']) { 
+echo ' <i class="fa fa-suitcase fa-lg"></i>';// ENDIF
+}
+echo '</span></a>
+									<ul class="dropdown-menu user-tooltip" role="menu" id="user-tooltip">
+										<li><a href="' . ((isset($this->_data['.'][0]['U_USER_PROFILE'])) ? $this->_data['.'][0]['U_USER_PROFILE'] : '') . '">
+												<div class="user-tooltip-avatar">
+													<img src="' . ((isset($this->_data['.'][0]['USER_AVATAR'])) ? $this->_data['.'][0]['USER_AVATAR'] : '') . '" alt="' . ((isset($this->_data['.'][0]['USER_NAME'])) ? $this->_data['.'][0]['USER_NAME'] : '') . '"/>
+												</div>
+												<div class="user-tooltip-name">
+													<span class="bold">' . ((isset($this->_data['.'][0]['USER_NAME'])) ? $this->_data['.'][0]['USER_NAME'] : '') . '</span><br />
+													' . ((isset($this->_data['.'][0]['L_my_profile'])) ? $this->_data['.'][0]['L_my_profile'] : (($this->lang('my_profile')) ? $this->lang('my_profile') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'my_profile'))) . '         }')) . '
+												</div>
+											</a>
+										</li>
+										<li class="tooltip-divider"></li>
+										';// BEGIN user_tooltip_addition
+$_user_tooltip_addition_count = (isset($this->_data['user_tooltip_addition.'])) ?  sizeof($this->_data['user_tooltip_addition.']) : 0;
+if ($_user_tooltip_addition_count) {
+for ($_user_tooltip_addition_i = 0; $_user_tooltip_addition_i < $_user_tooltip_addition_count; $_user_tooltip_addition_i++)
+{
+echo '
+										<li class="' . ((isset($this->_data['user_tooltip_addition.'][$_user_tooltip_addition_i]['CLASS'])) ? $this->_data['user_tooltip_addition.'][$_user_tooltip_addition_i]['CLASS'] : '') . '">' . ((isset($this->_data['user_tooltip_addition.'][$_user_tooltip_addition_i]['TEXT'])) ? $this->_data['user_tooltip_addition.'][$_user_tooltip_addition_i]['TEXT'] : '') . '</li>
+										';}}
+// END user_tooltip_addition
+// IF USER_IS_AWAY
+if ($this->_data['.'][0]['USER_IS_AWAY']) { 
+echo '
+										<li class="user_tooltip_awaymode"><a href="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Settings' . ((isset($this->_data['.'][0]['SEO_EXTENSION'])) ? $this->_data['.'][0]['SEO_EXTENSION'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '#fragment-calendar"><i class="fa fa-suitcase fa-lg"></i> ' . ((isset($this->_data['.'][0]['L_calendar_user_is_away'])) ? $this->_data['.'][0]['L_calendar_user_is_away'] : (($this->lang('calendar_user_is_away')) ? $this->lang('calendar_user_is_away') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'calendar_user_is_away'))) . '         }')) . '</a></li>
+										';// ENDIF
+}
+echo '
+										<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Settings' . ((isset($this->_data['.'][0]['SEO_EXTENSION'])) ? $this->_data['.'][0]['SEO_EXTENSION'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '"><i class="fa fa-cog fa-lg"></i> ' . ((isset($this->_data['.'][0]['L_settings'])) ? $this->_data['.'][0]['L_settings'] : (($this->lang('settings')) ? $this->lang('settings') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'settings'))) . '         }')) . '</a></li>
+										<li><a href="' . ((isset($this->_data['.'][0]['U_LOGOUT'])) ? $this->_data['.'][0]['U_LOGOUT'] : '') . '"><i class="fa fa-sign-out fa-lg"></i> ' . ((isset($this->_data['.'][0]['L_logout'])) ? $this->_data['.'][0]['L_logout'] : (($this->lang('logout')) ? $this->lang('logout') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'logout'))) . '         }')) . '</a></li>
+									</ul>
+								</div>
+							</li>
+							';// IF S_ADMIN
+if ($this->_data['.'][0]['S_ADMIN']) { 
+echo '<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_ROOT_PATH'])) ? $this->_data['.'][0]['EQDKP_ROOT_PATH'] : '') . 'admin/' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '"><i class="fa fa-cog fa-lg"></i> <span class="hiddenSmartphone">' . ((isset($this->_data['.'][0]['L_menu_admin_panel'])) ? $this->_data['.'][0]['L_menu_admin_panel'] : (($this->lang('menu_admin_panel')) ? $this->lang('menu_admin_panel') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'menu_admin_panel'))) . '         }')) . '</span></a></li>';// ENDIF
+}
+// IF U_CHARACTERS != ""
+if ($this->_data['.'][0]['U_CHARACTERS'] != "") { 
+echo '<li><a href="' . ((isset($this->_data['.'][0]['U_CHARACTERS'])) ? $this->_data['.'][0]['U_CHARACTERS'] : '') . '"><i class="fa fa-group fa-lg"></i> <span class="hiddenSmartphone">' . ((isset($this->_data['.'][0]['L_menu_members'])) ? $this->_data['.'][0]['L_menu_members'] : (($this->lang('menu_members')) ? $this->lang('menu_members') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'menu_members'))) . '         }')) . '</span></a></li>';// ENDIF
+}
+// IF S_MYCHARS_POINTS and U_CHARACTERS != ""
+if ($this->_data['.'][0]['S_MYCHARS_POINTS'] && $this->_data['.'][0]['U_CHARACTERS'] != "") { 
+echo '
+								<li class="hiddenSmartphone">
+									<div class="mychars-points-tooltip-container">
+									<a class="mychars-points-tooltip-trigger tooltip-trigger" data-tooltip="mychars-points-tooltip"><i class="fa fa-trophy fa-lg"></i> <span class="mychars-points-target"></span></a>
+									<ul class="dropdown-menu mychars-points-tooltip" role="menu" id="mychars-points-tooltip"><li>
+										<table>
+										';// BEGIN mychars_points
+$_mychars_points_count = (isset($this->_data['mychars_points.'])) ?  sizeof($this->_data['mychars_points.']) : 0;
+if ($_mychars_points_count) {
+for ($_mychars_points_i = 0; $_mychars_points_i < $_mychars_points_count; $_mychars_points_i++)
+{
+echo '
+											<tr ';// IF mychars_points.IS_MAIN
+if ($this->_data['mychars_points.'][$_mychars_points_i]['IS_MAIN']) { 
+echo 'class="main"';// ENDIF
+}
+echo ' id="mcp' . ((isset($this->_data['mychars_points.'][$_mychars_points_i]['ID'])) ? $this->_data['mychars_points.'][$_mychars_points_i]['ID'] : '') . '">
+												<td class="nowrap char hand"><span class="icons">' . ((isset($this->_data['mychars_points.'][$_mychars_points_i]['CHARICON'])) ? $this->_data['mychars_points.'][$_mychars_points_i]['CHARICON'] : '') . '</span> ' . ((isset($this->_data['mychars_points.'][$_mychars_points_i]['CHARNAME'])) ? $this->_data['mychars_points.'][$_mychars_points_i]['CHARNAME'] : '') . '</td>
+												<td>' . ((isset($this->_data['mychars_points.'][$_mychars_points_i]['POOLNAME'])) ? $this->_data['mychars_points.'][$_mychars_points_i]['POOLNAME'] : '') . '</td>
+												<td class="nowrap current">' . ((isset($this->_data['mychars_points.'][$_mychars_points_i]['CURRENT'])) ? $this->_data['mychars_points.'][$_mychars_points_i]['CURRENT'] : '') . '</td>
+												<td><a href="' . ((isset($this->_data['mychars_points.'][$_mychars_points_i]['CHARLINK'])) ? $this->_data['mychars_points.'][$_mychars_points_i]['CHARLINK'] : '') . '"><i class="fa fa-external-link fa-lg"></i></a></td>
+											</tr>
+										';}}
+// END mychars_points
+echo '
+										</table></li>
+									</ul>
+								</div>
+								</li>
+							';// ENDIF
+}
+echo '
+							
+							<li>
+								<div class="notification-tooltip-container">
+									<a class="notification-tooltip-trigger"><i class="fa fa-bell fa-lg"></i> <span class="hiddenSmartphone">' . ((isset($this->_data['.'][0]['L_notifications'])) ? $this->_data['.'][0]['L_notifications'] : (($this->lang('notifications')) ? $this->lang('notifications') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'notifications'))) . '         }')) . '</span></a>
+									<span class="notification-tooltip-trigger bubble-red notification-bubble-red hand" ';// IF NOTIFICATION_COUNT_RED == 0
+if ($this->_data['.'][0]['NOTIFICATION_COUNT_RED'] == 0) { 
+echo 'style="display:none;"';// ENDIF
+}
+echo ' >' . ((isset($this->_data['.'][0]['NOTIFICATION_COUNT_RED'])) ? $this->_data['.'][0]['NOTIFICATION_COUNT_RED'] : '') . '</span>
+									<span class="notification-tooltip-trigger bubble-yellow notification-bubble-yellow hand" ';// IF NOTIFICATION_COUNT_YELLOW == 0
+if ($this->_data['.'][0]['NOTIFICATION_COUNT_YELLOW'] == 0) { 
+echo 'style="display:none;"';// ENDIF
+}
+echo '>' . ((isset($this->_data['.'][0]['NOTIFICATION_COUNT_YELLOW'])) ? $this->_data['.'][0]['NOTIFICATION_COUNT_YELLOW'] : '') . '</span>
+									<span class="notification-tooltip-trigger bubble-green notification-bubble-green hand" ';// IF NOTIFICATION_COUNT_GREEN == 0
+if ($this->_data['.'][0]['NOTIFICATION_COUNT_GREEN'] == 0) { 
+echo 'style="display:none;"';// ENDIF
+}
+echo '>' . ((isset($this->_data['.'][0]['NOTIFICATION_COUNT_GREEN'])) ? $this->_data['.'][0]['NOTIFICATION_COUNT_GREEN'] : '') . '</span>
+									<ul class="dropdown-menu notification-tooltip" role="menu" id="notification-tooltip-all">
+										<li class="notification-action-bar"> 
+											<div class="floatLeft">
+												<span class="bubble-red notification-bubble-red notification-filter hand" ';// IF NOTIFICATION_COUNT_RED == 0
+if ($this->_data['.'][0]['NOTIFICATION_COUNT_RED'] == 0) { 
+echo 'style="display:none;"';// ENDIF
+}
+echo ' >' . ((isset($this->_data['.'][0]['NOTIFICATION_COUNT_RED'])) ? $this->_data['.'][0]['NOTIFICATION_COUNT_RED'] : '') . '</span>
+												<span class="bubble-yellow notification-bubble-yellow notification-filter hand" ';// IF NOTIFICATION_COUNT_YELLOW == 0
+if ($this->_data['.'][0]['NOTIFICATION_COUNT_YELLOW'] == 0) { 
+echo 'style="display:none;"';// ENDIF
+}
+echo '>' . ((isset($this->_data['.'][0]['NOTIFICATION_COUNT_YELLOW'])) ? $this->_data['.'][0]['NOTIFICATION_COUNT_YELLOW'] : '') . '</span>
+												<span class="bubble-green notification-bubble-green notification-filter hand" ';// IF NOTIFICATION_COUNT_GREEN == 0
+if ($this->_data['.'][0]['NOTIFICATION_COUNT_GREEN'] == 0) { 
+echo 'style="display:none;"';// ENDIF
+}
+echo '>' . ((isset($this->_data['.'][0]['NOTIFICATION_COUNT_GREEN'])) ? $this->_data['.'][0]['NOTIFICATION_COUNT_GREEN'] : '') . '</span>
+											</div>
+												
+											<div class="floatRight">
+												<span class="hand notification-mark-all-read">' . ((isset($this->_data['.'][0]['L_mark_all_as_read'])) ? $this->_data['.'][0]['L_mark_all_as_read'] : (($this->lang('mark_all_as_read')) ? $this->lang('mark_all_as_read') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'mark_all_as_read'))) . '         }')) . '</span> &bull; <span class="hand" onclick="window.location=\'' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Settings' . ((isset($this->_data['.'][0]['SEO_EXTENSION'])) ? $this->_data['.'][0]['SEO_EXTENSION'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '#fragment-notifications\'"><i class="fa fa-cog fa-lg"></i></span>
+											</div>
+											
+											<div class="clear"></div>
+										</li>
+										<li class="tooltip-divider"></li>
+										<li class="notification-content">
+											<ul>' . ((isset($this->_data['.'][0]['NOTIFICATIONS'])) ? $this->_data['.'][0]['NOTIFICATIONS'] : '') . '</ul>
+										</li>
+										<li class="tooltip-divider"></li>
+										<li class="notification-action-bar-btm"> <span class="hand" onclick="window.location=\'' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Notifications' . ((isset($this->_data['.'][0]['SEO_EXTENSION'])) ? $this->_data['.'][0]['SEO_EXTENSION'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '\'">' . ((isset($this->_data['.'][0]['L_show_all'])) ? $this->_data['.'][0]['L_show_all'] : (($this->lang('show_all')) ? $this->lang('show_all') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'show_all'))) . '         }')) . '</span></li>
+									</ul>
+								</div>
+							</li>
+							
+							
+							';// IF S_SEARCH
+if ($this->_data['.'][0]['S_SEARCH']) { 
+echo '
+							<li class="hiddenDesktop"><a href="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Search' . ((isset($this->_data['.'][0]['SEO_EXTENSION'])) ? $this->_data['.'][0]['SEO_EXTENSION'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '"><i class="fa fa-search"></i></a></li>
+							';// ENDIF
+}
+// BEGIN personal_area_addition
+$_personal_area_addition_count = (isset($this->_data['personal_area_addition.'])) ?  sizeof($this->_data['personal_area_addition.']) : 0;
+if ($_personal_area_addition_count) {
+for ($_personal_area_addition_i = 0; $_personal_area_addition_i < $_personal_area_addition_count; $_personal_area_addition_i++)
+{
+echo '
+							<li>' . ((isset($this->_data['personal_area_addition.'][$_personal_area_addition_i]['TEXT'])) ? $this->_data['personal_area_addition.'][$_personal_area_addition_i]['TEXT'] : '') . '</li>
+							';}}
+// END personal_area_addition
+echo '
+						</ul>
+					';// ENDIF
+}
+echo '
+				</div>
+				<div id="personalAreaTime" class="hiddenSmartphone">
+					<ul>
+						<li class="personalAreaTime"><i class="fa fa-clock-o fa-lg"></i> <span class="user_time">' . ((isset($this->_data['.'][0]['USER_TIME'])) ? $this->_data['.'][0]['USER_TIME'] : '') . '</span></li>
+						<li>';// IF S_SEARCH
+if ($this->_data['.'][0]['S_SEARCH']) { 
+echo '
+						<form method="post" action="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Search' . ((isset($this->_data['.'][0]['SEO_EXTENSION'])) ? $this->_data['.'][0]['SEO_EXTENSION'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '" id="search_form">
+							<input name="svalue" size="20" maxlength="30" class="input search" id="loginarea_search" type="text" value="' . ((isset($this->_data['.'][0]['L_search'])) ? $this->_data['.'][0]['L_search'] : (($this->lang('search')) ? $this->lang('search') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'search'))) . '         }')) . '..."/>
+							<button type="submit" class="search_button" value="" title="' . ((isset($this->_data['.'][0]['L_search_do'])) ? $this->_data['.'][0]['L_search_do'] : (($this->lang('search_do')) ? $this->lang('search_do') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'search_do'))) . '         }')) . '">
+								<i class="fa fa-search fa-lg"></i>
+							</button>
+						</form>
+					';// ENDIF
+}
+echo '	</li>
+					</ul>
+				</div>
+				<div class="clear"></div>
+				</div>
+			</div> ';echo '<!-- close personalArea -->';echo '
+		</header>
+		<div id="wrapper">
+			
+		<header>
+			<div id="header">
+				';echo '
+				<div id="logoContainer" class="' . ((isset($this->_data['.'][0]['T_LOGO_POSITION'])) ? $this->_data['.'][0]['T_LOGO_POSITION'] : '') . '">
+					<div id="logoArea">
+						';// IF HEADER_LOGO
+if ($this->_data['.'][0]['HEADER_LOGO']) { 
+echo '
+						<a href="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '"><img src="' . ((isset($this->_data['.'][0]['HEADER_LOGO'])) ? $this->_data['.'][0]['HEADER_LOGO'] : '') . '" alt="' . ((isset($this->_data['.'][0]['MAIN_TITLE'])) ? $this->_data['.'][0]['MAIN_TITLE'] : '') . '" id="mainlogo" /></a>
+						';// ENDIF
+}
+echo '
+					</div>';echo '<!-- close logoArea -->';echo '
+					
+					<hgroup id="titles">
+							<h1>' . ((isset($this->_data['.'][0]['MAIN_TITLE'])) ? $this->_data['.'][0]['MAIN_TITLE'] : '') . '</h1><br />
+							<h2>' . ((isset($this->_data['.'][0]['SUB_TITLE'])) ? $this->_data['.'][0]['SUB_TITLE'] : '') . '</h2>
+					</hgroup>';echo '<!-- close titles-->';echo '
+					<div class="clear noheight">&nbsp;</div>
+				</div>
+				<div class="portal_block1">' . ((isset($this->_data['.'][0]['PORTAL_BLOCK1'])) ? $this->_data['.'][0]['PORTAL_BLOCK1'] : '') . '</div>
+				';echo '
+			</div> ';echo '<!-- close header-->';echo '
+		</header>
+		
+		
+		<section id="contentContainer">
+			<a id="content"></a>
+			';echo '
+			<header>
+				<nav id="nav">
+					<div id="mainmenu">
+						<div class="hiddenSmartphone">
+							' . ((isset($this->_data['.'][0]['MAIN_MENU'])) ? $this->_data['.'][0]['MAIN_MENU'] : '') . '
+							<div class="clear noheight">&nbsp;</div>
+						</div>
+						<div class="hiddenDesktop nav-mobile">
+							<i class="fa fa-list hand" onclick="$(\'.nav-mobile-overlay\').toggle();"></i>
+							<div class="nav-mobile-overlay">
+								<div class="nav-mobile-closebtn" onclick="$(\'.nav-mobile-overlay\').toggle();">
+									<i class="fa fa-lg fa-times hand"></i>
+								</div>
+							' . ((isset($this->_data['.'][0]['MAIN_MENU_MOBILE'])) ? $this->_data['.'][0]['MAIN_MENU_MOBILE'] : '') . '
+							';// IF S_IN_ADMIN
+if ($this->_data['.'][0]['S_IN_ADMIN']) { 
+echo '
+							<div class="admin-headline"><i class="fa fa-cog fa-lg"></i> ' . ((isset($this->_data['.'][0]['L_menu_admin_panel'])) ? $this->_data['.'][0]['L_menu_admin_panel'] : (($this->lang('menu_admin_panel')) ? $this->lang('menu_admin_panel') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'menu_admin_panel'))) . '         }')) . '</div>
+							' . ((isset($this->_data['.'][0]['ADMIN_MENU_MOBILE'])) ? $this->_data['.'][0]['ADMIN_MENU_MOBILE'] : '') . '
+							';// ELSE
+} else {
+// IF S_ADMIN
+if ($this->_data['.'][0]['S_ADMIN']) { 
+echo '<div class="admin-headline"><a href="' . ((isset($this->_data['.'][0]['EQDKP_ROOT_PATH'])) ? $this->_data['.'][0]['EQDKP_ROOT_PATH'] : '') . 'admin/' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '"><i class="fa fa-cog fa-lg"></i> ' . ((isset($this->_data['.'][0]['L_menu_admin_panel'])) ? $this->_data['.'][0]['L_menu_admin_panel'] : (($this->lang('menu_admin_panel')) ? $this->lang('menu_admin_panel') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'menu_admin_panel'))) . '         }')) . '</a></div>';// ENDIF
+}
+// ENDIF
+}
+echo '
+							</div>
+						</div>
+						';echo '
+					</div>';echo '<!-- close mainmenu -->';// IF S_IN_ADMIN
+if ($this->_data['.'][0]['S_IN_ADMIN']) { 
+echo '
+					<div id="adminmenu">
+						<div class="hiddenSmartphone">
+							' . ((isset($this->_data['.'][0]['ADMIN_MENU'])) ? $this->_data['.'][0]['ADMIN_MENU'] : '') . '
+						</div>
+						';echo '
+					</div>
+					';// ENDIF
+}
+echo '
+				</nav>
+			</header>
+			
+			<div class="portal">
+				';echo '
+				<div class="columnContainer">
+					';// IF S_PORTAL_LEFT
+if ($this->_data['.'][0]['S_PORTAL_LEFT']) { 
+echo '
+					<aside class="first column portal-left" style="';// IF T_COLUMN_LEFT_WIDTH
+if ($this->_data['.'][0]['T_COLUMN_LEFT_WIDTH']) { 
+echo 'min-width:' . ((isset($this->_data['.'][0]['T_COLUMN_LEFT_WIDTH'])) ? $this->_data['.'][0]['T_COLUMN_LEFT_WIDTH'] : '') . ';max-width:' . ((isset($this->_data['.'][0]['T_COLUMN_LEFT_WIDTH'])) ? $this->_data['.'][0]['T_COLUMN_LEFT_WIDTH'] : '') . ';';// ELSE
+} else {
+echo 'min-width: 200px;';// ENDIF
+}
+echo '">
+						<div class="columnInner">
+							';echo '
+							' . ((isset($this->_data['.'][0]['PORTAL_LEFT'])) ? $this->_data['.'][0]['PORTAL_LEFT'] : '') . '
+							';echo '
+						</div> ';echo '<!-- close first column -->';echo '
+					</aside>
+					';// ENDIF
+}
+echo '
+					
+					<article class="second column ';// IF not S_PORTAL_RIGHT
+if (! $this->_data['.'][0]['S_PORTAL_RIGHT']) { 
+echo 'no_third_column';// ENDIF
+}
+echo '">
+						<div class="columnInner">
+							';// IF S_SHOW_COOKIE_HINT
+if ($this->_data['.'][0]['S_SHOW_COOKIE_HINT']) { 
+echo '
+							<div class="infobox infobox-large infobox-blue clearfix">
+								<i class="fa-info-circle fa pull-left fa-2x"></i> ' . ((isset($this->_data['.'][0]['COOKIE_HINT'])) ? $this->_data['.'][0]['COOKIE_HINT'] : '') . '
+								<i class="fa-times fa pull-right hand" onclick="$(this).parent().hide()"></i>
+							</div>
+							';// ENDIF
+}
+// BEGIN global_warnings
+$_global_warnings_count = (isset($this->_data['global_warnings.'])) ?  sizeof($this->_data['global_warnings.']) : 0;
+if ($_global_warnings_count) {
+for ($_global_warnings_i = 0; $_global_warnings_i < $_global_warnings_count; $_global_warnings_i++)
+{
+echo '
+							<header>
+								<div class="infobox infobox-large infobox-' . ((isset($this->_data['global_warnings.'][$_global_warnings_i]['CLASS'])) ? $this->_data['global_warnings.'][$_global_warnings_i]['CLASS'] : '') . ' clearfix">
+									<i class="' . ((isset($this->_data['global_warnings.'][$_global_warnings_i]['ICON'])) ? $this->_data['global_warnings.'][$_global_warnings_i]['ICON'] : '') . ' fa-4x pull-left"></i> ' . ((isset($this->_data['global_warnings.'][$_global_warnings_i]['MESSAGE'])) ? $this->_data['global_warnings.'][$_global_warnings_i]['MESSAGE'] : '') . '
+									';// IF global_warnings.S_DISMISS
+if ($this->_data['global_warnings.'][$_global_warnings_i]['S_DISMISS']) { 
+echo '
+									<i class="fa-times fa pull-right hand" onclick="$(this).parent().hide()"></i>
+									';// ENDIF
+}
+echo '
+								</div>
+							</header>
+							';}}
+// END global_warnings
+echo '	
+							<aside id="portal-middle">
+								';echo '
+								' . ((isset($this->_data['.'][0]['PORTAL_MIDDLE'])) ? $this->_data['.'][0]['PORTAL_MIDDLE'] : '') . '
+								';echo '
+							</aside>
+							';// ENDIF
+}
+echo '
+							<div id="contentBody" class="' . ((isset($this->_data['.'][0]['PAGE_CLASS'])) ? $this->_data['.'][0]['PAGE_CLASS'] : '') . '';// IF not S_NORMAL_HEADER
+if (! $this->_data['.'][0]['S_NORMAL_HEADER']) { 
+echo ' simple-header ';// ENDIF
+}
+// IF not S_NORMAL_FOOTER
+if (! $this->_data['.'][0]['S_NORMAL_FOOTER']) { 
+echo ' simple-footer ';// ENDIF
+}
+echo '">
+								<div id="contentBody2">
+									';echo '
+									<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+$(document).ready(function(){
+	$(\'#username\').change(function() {
+		var username = $(this).val();
+		if(username.length > 0){
+			$.post("' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Register/' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '&ajax=1' . ((isset($this->_data['.'][0]['AJAXEXTENSION_USER'])) ? $this->_data['.'][0]['AJAXEXTENSION_USER'] : '') . '", { username: username }, function(result){
+				if(result == \'true\'){
+					$("#error_username").hide();
+					$("#tick_username").show();
+				}else{
+					errortext	= $("#error_username").html();
+					$(\'#error_username\').html(errortext.replace(new RegExp("\\\\{0\\\\}", "g"), username));
+					$("#tick_username").hide();
+					$("#error_username").show();
+				}
+			});
+		}else{
+			$("#tick_username").hide();
+			$("#error_username").hide();
+		}
+	});
+
+	$(\'#useremail\').change(function() {
+		var user_email = $(this).val();
+		if(user_email.length > 0){
+			$.post("' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Register/' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '&ajax=1' . ((isset($this->_data['.'][0]['AJAXEXTENSION_USER'])) ? $this->_data['.'][0]['AJAXEXTENSION_USER'] : '') . '", { user_email: user_email }, function(result){
+				if(result == \'true\'){
+					$("#error_email").hide();
+					$("#tick_mail").show();
+				}else{
+					errortext	= $("#error_email").html();
+					$(\'#error_email\').html(errortext.replace(new RegExp("\\\\{0\\\\}", "g"), user_email));
+					$("#tick_mail").hide();
+					$("#error_email").show();
+				}
+			});
+		}else{
+			$("#tick_mail").hide();
+			$("#error_email").hide();
+		}
+	});
+
+	';// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+echo '
+	$(\'.changepermcolor\').change(function() {
+
+		if($(this).prop(\'checked\')){
+			$(\'#span_\'+this.id).removeClass("negative");
+			$(\'#span_\'+this.id).addClass(\'positive\');
+		}else{
+			$(\'#span_\'+this.id).addClass("negative");
+			$(\'#span_\'+this.id).removeClass(\'positive\');
+		}
+	});
+
+	var user_perms = new Array(\'\'';// BEGIN user_permissions
+$_user_permissions_count = (isset($this->_data['user_permissions.'])) ?  sizeof($this->_data['user_permissions.']) : 0;
+if ($_user_permissions_count) {
+for ($_user_permissions_i = 0; $_user_permissions_i < $_user_permissions_count; $_user_permissions_i++)
+{
+echo ',\'' . ((isset($this->_data['user_permissions.'][$_user_permissions_i]['NAME'])) ? $this->_data['user_permissions.'][$_user_permissions_i]['NAME'] : '') . '\'';}}
+// END user_permissions
+echo ');
+	var group_perms = new Array();
+	';// BEGIN group_permissions
+$_group_permissions_count = (isset($this->_data['group_permissions.'])) ?  sizeof($this->_data['group_permissions.']) : 0;
+if ($_group_permissions_count) {
+for ($_group_permissions_i = 0; $_group_permissions_i < $_group_permissions_count; $_group_permissions_i++)
+{
+echo '
+	group_perms[' . ((isset($this->_data['group_permissions.'][$_group_permissions_i]['KEY'])) ? $this->_data['group_permissions.'][$_group_permissions_i]['KEY'] : '') . '] = new Array(\'\'';// BEGIN group_permission_row
+$_group_permission_row_count = (isset($this->_data['group_permissions.'][$_group_permissions_i]['group_permission_row.'])) ? sizeof($this->_data['group_permissions.'][$_group_permissions_i]['group_permission_row.']) : 0;
+if ($_group_permission_row_count) {
+for ($_group_permission_row_i = 0; $_group_permission_row_i < $_group_permission_row_count; $_group_permission_row_i++)
+{
+echo ',\'' . ((isset($this->_data['group_permissions.'][$_group_permissions_i]['group_permission_row.'][$_group_permission_row_i]['NAME'])) ? $this->_data['group_permissions.'][$_group_permissions_i]['group_permission_row.'][$_group_permission_row_i]['NAME'] : '') . '\'';}}
+// END group_permission_row
+echo ');
+	';}}
+// END group_permissions
+echo '
+	$("#dw_user_groups")
+		.multiselect()
+		.bind("multiselectclick multiselectcheckall multiselectuncheckall", function( event, ui ){
+			var checkedValues = $.map($(this).multiselect("getChecked"), function( input ){
+				return input.value;
+			});
+			reset_permissions();
+			set_user_permissions();
+			console.log(checkedValues);
+			
+			$.each(checkedValues, function(index, value) {
+				set_group_permissions(value);
+			});
+		})
+		.triggerHandler("multiselectclick"); // trigger above logic when page first loads
+
+	function reset_permissions(){
+		$(\'.changepermcolor\').prop("checked", false);
+		$(\'.changepermcolor\').prop("disabled", false);
+		$(\'.perm_text\').removeClass("positive");
+		$(\'.perm_text\').addClass("negative");
+	}
+
+	function set_user_permissions(){
+		$.each(user_perms, function(index, value) {
+			if (value != ""){
+				$(\'#span_cb_\'+value).removeClass(\'negative\');
+				$(\'#span_cb_\'+value).addClass(\'positive\');
+				$(\'#cb_\'+value).prop(\'checked\', true);
+			}
+		});
+	}
+
+	function set_group_permissions(groupid){
+		$.each(group_perms[groupid], function(index, value) {
+			if (value != ""){
+				$(\'#span_cb_\'+value).removeClass(\'negative\');
+				$(\'#span_cb_\'+value).addClass(\'positive\');
+				$(\'#cb_\'+value).prop(\'checked\', true);
+				$(\'#cb_\'+value).prop(\'disabled\', true);
+			}
+		});
+	}
+	';// ENDIF
+}
+echo '
+
+	// possible fix for double-click problem
+	// http://forum.jquery.com/topic/validate-plugin-and-remote-have-to-submit-twice
+	$.ajaxSetup ({
+		async: false
+	});
+});
+//]]>
+</script>
+
+';// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+echo '
+<div class="breadcrumb-container">
+	<ul class="breamcrumb">
+		<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '" title="' . ((isset($this->_data['.'][0]['L_home'])) ? $this->_data['.'][0]['L_home'] : (($this->lang('home')) ? $this->lang('home') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'home'))) . '         }')) . '"><i class="fa fa-home"></i></a></li>
+		<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_ROOT_PATH'])) ? $this->_data['.'][0]['EQDKP_ROOT_PATH'] : '') . 'admin/' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '">' . ((isset($this->_data['.'][0]['L_menu_admin_panel'])) ? $this->_data['.'][0]['L_menu_admin_panel'] : (($this->lang('menu_admin_panel')) ? $this->lang('menu_admin_panel') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'menu_admin_panel'))) . '         }')) . '</a>
+		<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_ROOT_PATH'])) ? $this->_data['.'][0]['EQDKP_ROOT_PATH'] : '') . 'admin/manage_users.php' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '">' . ((isset($this->_data['.'][0]['L_manage_users'])) ? $this->_data['.'][0]['L_manage_users'] : (($this->lang('manage_users')) ? $this->lang('manage_users') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'manage_users'))) . '         }')) . '</a></li>
+		<li class="current"><a>' . ((isset($this->_data['.'][0]['USERNAME'])) ? $this->_data['.'][0]['USERNAME'] : '') . '</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
+<div class="contentHeader">
+	<h1 class="contentTitle">' . ((isset($this->_data['.'][0]['L_manage_users'])) ? $this->_data['.'][0]['L_manage_users'] : (($this->lang('manage_users')) ? $this->lang('manage_users') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'manage_users'))) . '         }')) . ': ' . ((isset($this->_data['.'][0]['USERNAME'])) ? $this->_data['.'][0]['USERNAME'] : '') . '</h1>
+</div>
+';// ELSE
+} else {
+echo '
+<div class="breadcrumb-container">
+	<ul class="breamcrumb">
+		<li><a href="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '" title="' . ((isset($this->_data['.'][0]['L_home'])) ? $this->_data['.'][0]['L_home'] : (($this->lang('home')) ? $this->lang('home') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'home'))) . '         }')) . '"><i class="fa fa-home"></i></a></li>
+		<li class="current"><a>' . ((isset($this->_data['.'][0]['L_settings_title'])) ? $this->_data['.'][0]['L_settings_title'] : (($this->lang('settings_title')) ? $this->lang('settings_title') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'settings_title'))) . '         }')) . '</a></li>
+	</ul>
+	<div class="clear"></div>
+</div>
+';// ENDIF
+}
+echo '
+
+<form method="post" action="' . ((isset($this->_data['.'][0]['ACTION'])) ? $this->_data['.'][0]['ACTION'] : '') . '" name="' . ((isset($this->_data['.'][0]['FORM_ID'])) ? $this->_data['.'][0]['FORM_ID'] : '') . '" id="' . ((isset($this->_data['.'][0]['FORM_ID'])) ? $this->_data['.'][0]['FORM_ID'] : '') . '" class="' . ((isset($this->_data['.'][0]['FORMCLASS'])) ? $this->_data['.'][0]['FORMCLASS'] : '') . '">
+<div class="content">
+	<div id="usersettings_tabs">
+
+		<ul>
+			';// BEGIN tabs
+$_tabs_count = (isset($this->_data['tabs.'])) ?  sizeof($this->_data['tabs.']) : 0;
+if ($_tabs_count) {
+for ($_tabs_i = 0; $_tabs_i < $_tabs_count; $_tabs_i++)
+{
+echo ' <li><a href=\'#fragment-' . ((isset($this->_data['tabs.'][$_tabs_i]['ID'])) ? $this->_data['tabs.'][$_tabs_i]['ID'] : '') . '\'><span>' . ((isset($this->_data['tabs.'][$_tabs_i]['NAME'])) ? $this->_data['tabs.'][$_tabs_i]['NAME'] : '') . '</span></a></li>';}}
+// END tabs
+// BEGIN plugin_settings_row
+$_plugin_settings_row_count = (isset($this->_data['plugin_settings_row.'])) ?  sizeof($this->_data['plugin_settings_row.']) : 0;
+if ($_plugin_settings_row_count) {
+for ($_plugin_settings_row_i = 0; $_plugin_settings_row_i < $_plugin_settings_row_count; $_plugin_settings_row_i++)
+{
+echo '<li><a href=\'#' . ((isset($this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['KEY'])) ? $this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['KEY'] : '') . '\'>' . ((isset($this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['ICON'])) ? $this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['ICON'] : '') . ' ' . ((isset($this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['PLUGIN'])) ? $this->_data['plugin_settings_row.'][$_plugin_settings_row_i]['PLUGIN'] : '') . '</a></li>';}}
+// END plugin_settings_row
+// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+echo '
+			<li><a href=\'#permissions\'>' . ((isset($this->_data['.'][0]['L_permissions'])) ? $this->_data['.'][0]['L_permissions'] : (($this->lang('permissions')) ? $this->lang('permissions') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'permissions'))) . '         }')) . '</a></li>
+			<li><a href=\'#members\'>' . ((isset($this->_data['.'][0]['L_associated_members'])) ? $this->_data['.'][0]['L_associated_members'] : (($this->lang('associated_members')) ? $this->lang('associated_members') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'associated_members'))) . '         }')) . '</a></li>
+			';// ENDIF
+}
+echo '
+		</ul>
+
+		<input type="hidden" name="old_username" value="' . ((isset($this->_data['.'][0]['USERNAME'])) ? $this->_data['.'][0]['USERNAME'] : '') . '" />
+		<input type="hidden" name="user_id[]" value="' . ((isset($this->_data['.'][0]['USERID'])) ? $this->_data['.'][0]['USERID'] : '') . '" />
+		<input type="hidden" name="u" value="' . ((isset($this->_data['.'][0]['USERID'])) ? $this->_data['.'][0]['USERID'] : '') . '" />
+
+		';// BEGIN tabs
+$_tabs_count = (isset($this->_data['tabs.'])) ?  sizeof($this->_data['tabs.']) : 0;
+if ($_tabs_count) {
+for ($_tabs_i = 0; $_tabs_i < $_tabs_count; $_tabs_i++)
+{
+echo '
+		<div id="fragment-' . ((isset($this->_data['tabs.'][$_tabs_i]['ID'])) ? $this->_data['tabs.'][$_tabs_i]['ID'] : '') . '">
+			';// BEGIN fieldsets
+$_fieldsets_count = (isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'])) ? sizeof($this->_data['tabs.'][$_tabs_i]['fieldsets.']) : 0;
+if ($_fieldsets_count) {
+for ($_fieldsets_i = 0; $_fieldsets_i < $_fieldsets_count; $_fieldsets_i++)
+{
+// IF tabs.fieldsets.INFO
+if ($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['INFO']) { 
+echo '
+			<div class="infobox infobox-large infobox-blue clearfix">
+				<i class="fa fa-info-circle fa-4x pull-left"></i> ' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['INFO'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['INFO'] : '') . '
+			</div>
+
+			';// ENDIF
+}
+echo '
+
+			<fieldset class="settings">
+				<legend>' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['NAME'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['NAME'] : '') . '</legend>
+
+				';// BEGIN fields
+$_fields_count = (isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'])) ? sizeof($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.']) : 0;
+if ($_fields_count) {
+for ($_fields_i = 0; $_fields_i < $_fields_count; $_fields_i++)
+{
+echo '
+				<dl>
+					<dt><label>' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['NAME'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['NAME'] : '') . '</label><br /><span>' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['HELP'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['HELP'] : '') . '</span></dt>
+					<dd>' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['FIELD'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['FIELD'] : '') . '' . ((isset($this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['TEXT'])) ? $this->_data['tabs.'][$_tabs_i]['fieldsets.'][$_fieldsets_i]['fields.'][$_fields_i]['TEXT'] : '') . '</dd>
+				</dl>
+				';}}
+// END fields
+echo '
+			</fieldset>
+			';}}
+// END fieldsets
+echo '
+		</div>
+		';}}
+// END tabs
+// BEGIN plugin_usersettings_div
+$_plugin_usersettings_div_count = (isset($this->_data['plugin_usersettings_div.'])) ?  sizeof($this->_data['plugin_usersettings_div.']) : 0;
+if ($_plugin_usersettings_div_count) {
+for ($_plugin_usersettings_div_i = 0; $_plugin_usersettings_div_i < $_plugin_usersettings_div_count; $_plugin_usersettings_div_i++)
+{
+echo '
+		<div id="' . ((isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['KEY'])) ? $this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['KEY'] : '') . '">
+			<fieldset class="settings">
+				';// BEGIN plugin_usersettings
+$_plugin_usersettings_count = (isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'])) ? sizeof($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.']) : 0;
+if ($_plugin_usersettings_count) {
+for ($_plugin_usersettings_i = 0; $_plugin_usersettings_i < $_plugin_usersettings_count; $_plugin_usersettings_i++)
+{
+// IF plugin_usersettings_div.plugin_usersettings.S_TH
+if ($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['S_TH']) { 
+echo '
+						</fieldset><fieldset class="settings">
+						<legend>' . ((isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['NAME'])) ? $this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['NAME'] : '') . '</legend>
+					';// ELSE
+} else {
+echo '
+						<dl>
+							<dt>
+								<label>' . ((isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['NAME'])) ? $this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['NAME'] : '') . '</label><br /><span>' . ((isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['HELP'])) ? $this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['HELP'] : '') . '</span>
+							</dt>
+							<dd>' . ((isset($this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['FIELD'])) ? $this->_data['plugin_usersettings_div.'][$_plugin_usersettings_div_i]['plugin_usersettings.'][$_plugin_usersettings_i]['FIELD'] : '') . '</dd>
+						</dl>
+					';// ENDIF
+}
+}}
+// END plugin_usersettings
+echo '
+			</fieldset>
+		</div>
+		';}}
+// END plugin_usersettings_div
+// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+echo '
+		<div id="permissions">
+			<div class="infobox infobox-large infobox-blue clearfix">
+				<i class="fa fa-info-circle fa-4x pull-left"></i> <input type="checkbox" checked="checked" disabled="disabled" />' . ((isset($this->_data['.'][0]['L_s_group_note'])) ? $this->_data['.'][0]['L_s_group_note'] : (($this->lang('s_group_note')) ? $this->lang('s_group_note') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 's_group_note'))) . '         }')) . '
+			</div>
+			<fieldset class="settings">
+				<legend>' . ((isset($this->_data['.'][0]['L_account_enabled'])) ? $this->_data['.'][0]['L_account_enabled'] : (($this->lang('account_enabled')) ? $this->lang('account_enabled') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'account_enabled'))) . '         }')) . '</legend>
+
+				<dl>
+					<dt><label>' . ((isset($this->_data['.'][0]['L_account_enabled'])) ? $this->_data['.'][0]['L_account_enabled'] : (($this->lang('account_enabled')) ? $this->lang('account_enabled') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'account_enabled'))) . '         }')) . '</label></dt>
+					<dd>' . ((isset($this->_data['.'][0]['ACTIVE_RADIO'])) ? $this->_data['.'][0]['ACTIVE_RADIO'] : '') . '</dd>
+				</dl>
+
+			</fieldset>
+			<fieldset class="settings">
+				<legend>' . ((isset($this->_data['.'][0]['L_user_groups'])) ? $this->_data['.'][0]['L_user_groups'] : (($this->lang('user_groups')) ? $this->lang('user_groups') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'user_groups'))) . '         }')) . '</legend>
+
+				<dl>
+					<dt><label>' . ((isset($this->_data['.'][0]['L_user_groups'])) ? $this->_data['.'][0]['L_user_groups'] : (($this->lang('user_groups')) ? $this->lang('user_groups') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'user_groups'))) . '         }')) . '</label></dt>
+					<dd>' . ((isset($this->_data['.'][0]['USER_GROUP_SELECT'])) ? $this->_data['.'][0]['USER_GROUP_SELECT'] : '') . '</dd>
+				</dl>
+
+			</fieldset>
+				';// IF S_PERM_PERMISSION
+if ($this->_data['.'][0]['S_PERM_PERMISSION']) { 
+echo '
+				<div id="permission_tabs">
+				<ul>
+					<li><a href=\'#user_perms\'><span>' . ((isset($this->_data['.'][0]['L_user_permissions'])) ? $this->_data['.'][0]['L_user_permissions'] : (($this->lang('user_permissions')) ? $this->lang('user_permissions') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'user_permissions'))) . '         }')) . '</span></a></li>
+					<li><a href=\'#admin_perms\'><span class="adminicon">' . ((isset($this->_data['.'][0]['L_admin_permissions'])) ? $this->_data['.'][0]['L_admin_permissions'] : (($this->lang('admin_permissions')) ? $this->lang('admin_permissions') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'admin_permissions'))) . '         }')) . '</span></a></li>
+				</ul>
+
+				<div id="user_perms">
+					';// BEGIN u_permissions_row
+$_u_permissions_row_count = (isset($this->_data['u_permissions_row.'])) ?  sizeof($this->_data['u_permissions_row.']) : 0;
+if ($_u_permissions_row_count) {
+for ($_u_permissions_row_i = 0; $_u_permissions_row_i < $_u_permissions_row_count; $_u_permissions_row_i++)
+{
+echo '
+					<fieldset class="settings mediumsettings">
+						<legend>' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['ICON'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['ICON'] : '') . ' ' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['GROUP'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['GROUP'] : '') . '</legend>
+						';// BEGIN check_group
+$_check_group_count = (isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'])) ? sizeof($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.']) : 0;
+if ($_check_group_count) {
+for ($_check_group_i = 0; $_check_group_i < $_check_group_count; $_check_group_i++)
+{
+// IF not u_permissions_row.check_group.S_SUPERADMIN_PERM
+if (! $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['S_SUPERADMIN_PERM']) { 
+echo '
+						<div class="permissions">
+							<label title="' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '">
+								';// IF u_permissions_row.check_group.S_IS_GROUP
+if ($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['S_IS_GROUP']) { 
+echo '
+								<input type="checkbox" name="' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" value="Y" ' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'] : '') . ' disabled="disabled" class="changepermcolor" id="cb_' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" />
+								';// ELSE
+} else {
+echo '
+								<input type="checkbox" name="' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" value="Y" ' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'] : '') . ' class="changepermcolor" id="cb_' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '"/>
+								';// ENDIF
+}
+echo '
+								<span id="span_cb_' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" class="perm_text ' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CLASS'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['CLASS'] : '') . '">' . ((isset($this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['TEXT'])) ? $this->_data['u_permissions_row.'][$_u_permissions_row_i]['check_group.'][$_check_group_i]['TEXT'] : '') . '</span>
+							</label>
+						</div>
+						';// ENDIF
+}
+}}
+// END check_group
+echo '
+					</fieldset>
+					';}}
+// END u_permissions_row
+echo '
+				</div>
+
+				<div id="admin_perms">
+					';// BEGIN a_permissions_row
+$_a_permissions_row_count = (isset($this->_data['a_permissions_row.'])) ?  sizeof($this->_data['a_permissions_row.']) : 0;
+if ($_a_permissions_row_count) {
+for ($_a_permissions_row_i = 0; $_a_permissions_row_i < $_a_permissions_row_count; $_a_permissions_row_i++)
+{
+echo '
+					<fieldset class="settings mediumsettings">
+						<legend>' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['ICON'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['ICON'] : '') . ' ' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['GROUP'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['GROUP'] : '') . '</legend>
+						';// BEGIN check_group
+$_check_group_count = (isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'])) ? sizeof($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.']) : 0;
+if ($_check_group_count) {
+for ($_check_group_i = 0; $_check_group_i < $_check_group_count; $_check_group_i++)
+{
+echo '
+						<div class="permissions">
+							<label>
+								';// IF a_permissions_row.check_group.S_IS_GROUP
+if ($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['S_IS_GROUP']) { 
+echo '
+								<input type="checkbox" name="' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" value="Y" ' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'] : '') . ' disabled="disabled" class="changepermcolor" id="cb_' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" />
+								';// ELSE
+} else {
+echo '
+								<input type="checkbox" name="' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" value="Y" ' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBCHECKED'] : '') . ' class="changepermcolor" id="cb_' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '"/>
+								';// ENDIF
+}
+echo '
+								<span id="span_cb_' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CBNAME'] : '') . '" class="perm_text ' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CLASS'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['CLASS'] : '') . '">' . ((isset($this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['TEXT'])) ? $this->_data['a_permissions_row.'][$_a_permissions_row_i]['check_group.'][$_check_group_i]['TEXT'] : '') . '</span>
+							</label>
+						</div>
+						';}}
+// END check_group
+echo '
+					</fieldset>
+					';}}
+// END a_permissions_row
+echo '
+				</div>
+			</div>
+			';// ENDIF
+}
+echo '
+		</div>
+
+		';// IF S_MU_TABLE
+if ($this->_data['.'][0]['S_MU_TABLE']) { 
+echo '
+		<div id="members">
+			<fieldset class="settings">
+				<legend>' . ((isset($this->_data['.'][0]['L_associated_members'])) ? $this->_data['.'][0]['L_associated_members'] : (($this->lang('associated_members')) ? $this->lang('associated_members') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'associated_members'))) . '         }')) . '</legend>
+
+				<dl>
+					<dt>
+						<label>' . ((isset($this->_data['.'][0]['L_associated_members'])) ? $this->_data['.'][0]['L_associated_members'] : (($this->lang('associated_members')) ? $this->lang('associated_members') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'associated_members'))) . '         }')) . '</label><br />
+					</dt>
+					<dd>
+						' . ((isset($this->_data['.'][0]['JS_CONNECTIONS'])) ? $this->_data['.'][0]['JS_CONNECTIONS'] : '') . ' ' . ((isset($this->_data['.'][0]['FV_MEMBER_ID'])) ? $this->_data['.'][0]['FV_MEMBER_ID'] : '') . '
+					</dd>
+				</dl>
+			</fieldset>
+		</div>
+		';// ENDIF
+}
+// ENDIF
+}
+echo '
+	</div>
+		<div class="contentFooter">
+			<button class="mainoption" type="submit" name="submit" ><i class="fa fa-check"></i>' . ((isset($this->_data['.'][0]['L_uc_connectme'])) ? $this->_data['.'][0]['L_uc_connectme'] : (($this->lang('uc_connectme')) ? $this->lang('uc_connectme') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'uc_connectme'))) . '         }')) . '</button>
+			<button class="liteoption" type="reset" name="reset"><i class="fa fa-trash-o"></i>' . ((isset($this->_data['.'][0]['L_reset'])) ? $this->_data['.'][0]['L_reset'] : (($this->lang('reset')) ? $this->lang('reset') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'reset'))) . '         }')) . '</button>
+			';// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+// IF not S_PROTECT_USER
+if (! $this->_data['.'][0]['S_PROTECT_USER']) { 
+echo '
+			<button class="liteoption cancel" type="button" name="del" onclick="delete_warning(' . ((isset($this->_data['.'][0]['USERID'])) ? $this->_data['.'][0]['USERID'] : '') . ');" id="delete_button"><i class="fa fa-times"></i>' . ((isset($this->_data['.'][0]['L_delete'])) ? $this->_data['.'][0]['L_delete'] : (($this->lang('delete')) ? $this->lang('delete') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'delete'))) . '         }')) . '</button>
+			';// ENDIF
+}
+echo '
+			<button class="mainoption cancel" type="submit" name=""><i class="fa fa-chevron-left"></i>' . ((isset($this->_data['.'][0]['L_back'])) ? $this->_data['.'][0]['L_back'] : (($this->lang('back')) ? $this->lang('back') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'back'))) . '         }')) . '</button>
+			';// ENDIF
+}
+echo '
+			
+		</div>
+	</div>
+
+	' . ((isset($this->_data['.'][0]['HIDDEN_FIELDS'])) ? $this->_data['.'][0]['HIDDEN_FIELDS'] : '') . '
+	' . ((isset($this->_data['.'][0]['CSRF_TOKEN'])) ? $this->_data['.'][0]['CSRF_TOKEN'] : '') . '
+</form>
+';// IF S_SETTING_ADMIN
+if ($this->_data['.'][0]['S_SETTING_ADMIN']) { 
+echo '' . ((isset($this->_data['.'][0]['JS_TAB_SELECT'])) ? $this->_data['.'][0]['JS_TAB_SELECT'] : '') . '';// ENDIF
+}
+echo '
+								</div>	
+							</div>';echo '<!-- close contentBody -->';// IF S_NORMAL_FOOTER
+if ($this->_data['.'][0]['S_NORMAL_FOOTER']) { 
+echo '
+							<aside id="portal-footer">
+							';echo '
+							' . ((isset($this->_data['.'][0]['PORTAL_BOTTOM'])) ? $this->_data['.'][0]['PORTAL_BOTTOM'] : '') . '
+							';echo '
+							</aside>
+							<footer class="debug">
+							';// IF S_SHOW_QUERIES
+if ($this->_data['.'][0]['S_SHOW_QUERIES']) { 
+echo '<br />' . ((isset($this->_data['.'][0]['DEBUG_TABS'])) ? $this->_data['.'][0]['DEBUG_TABS'] : '') . '';// ENDIF
+}
+// IF S_SHOW_DEBUG
+if ($this->_data['.'][0]['S_SHOW_DEBUG']) { 
+echo '
+							<br /><div class="center">
+								<span class="debug-info">SQL Querys: ' . ((isset($this->_data['.'][0]['EQDKP_QUERYCOUNT'])) ? $this->_data['.'][0]['EQDKP_QUERYCOUNT'] : '') . ' | in ' . ((isset($this->_data['.'][0]['EQDKP_RENDERTIME'])) ? $this->_data['.'][0]['EQDKP_RENDERTIME'] : '') . ' | ' . ((isset($this->_data['.'][0]['EQDKP_MEM_PEAK'])) ? $this->_data['.'][0]['EQDKP_MEM_PEAK'] : '') . ' |
+									<a href="http://validator.w3.org/check/referer" target="_top">XHTML Validate</a>
+								</span>
+							</div>
+							';// ENDIF
+}
+echo '
+							</footer>
+						</div>
+					</article>';echo '<!-- close second column -->';// IF S_PORTAL_RIGHT
+if ($this->_data['.'][0]['S_PORTAL_RIGHT']) { 
+echo '
+					<aside class="third column portal-right" style="';// IF T_COLUMN_RIGHT_WIDTH
+if ($this->_data['.'][0]['T_COLUMN_RIGHT_WIDTH']) { 
+echo 'min-width:' . ((isset($this->_data['.'][0]['T_COLUMN_RIGHT_WIDTH'])) ? $this->_data['.'][0]['T_COLUMN_RIGHT_WIDTH'] : '') . ';max-width:' . ((isset($this->_data['.'][0]['T_COLUMN_RIGHT_WIDTH'])) ? $this->_data['.'][0]['T_COLUMN_RIGHT_WIDTH'] : '') . '';// ELSE
+} else {
+echo 'min-width: 200px;';// ENDIF
+}
+echo '">
+						<div class="columnInner">
+							';echo '
+							' . ((isset($this->_data['.'][0]['PORTAL_RIGHT'])) ? $this->_data['.'][0]['PORTAL_RIGHT'] : '') . '
+							';echo '
+						</div>
+					</aside>
+					';// ENDIF
+}
+echo '
+				</div>
+			</div>
+			
+			<footer id="contentFooter">
+				';echo '
+				<div class="floatLeft">
+					';// IF S_REPONSIVE
+if ($this->_data['.'][0]['S_REPONSIVE']) { 
+echo '
+					<div class="hiddenDesktop toggleResponsive"><a href="' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '&toggleResponsive=desktop"><i class="fa fa-lg fa-desktop"></i> ' . ((isset($this->_data['.'][0]['L_desktop_version'])) ? $this->_data['.'][0]['L_desktop_version'] : (($this->lang('desktop_version')) ? $this->lang('desktop_version') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'desktop_version'))) . '         }')) . '</a></div>
+					';// ELSE
+} else {
+echo '
+					<div class="toggleResponsive"><a href="' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '&toggleResponsive=mobile"><a href="' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '&toggleResponsive=mobile"><i class="fa fa-lg fa-mobile-phone"></i> ' . ((isset($this->_data['.'][0]['L_mobile_version'])) ? $this->_data['.'][0]['L_mobile_version'] : (($this->lang('mobile_version')) ? $this->lang('mobile_version') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'mobile_version'))) . '         }')) . '</a></div>
+					';// ENDIF
+}
+echo '
+				</div>
+				<div class="floatRight">
+					';// IF not S_LOGGED_IN and S_STYLECHANGER
+if (! $this->_data['.'][0]['S_LOGGED_IN'] && $this->_data['.'][0]['S_STYLECHANGER']) { 
+echo '
+					<a href="javascript:change_style();"><i class="fa fa-paint-brush"></i> ' . ((isset($this->_data['.'][0]['L_change_style'])) ? $this->_data['.'][0]['L_change_style'] : (($this->lang('change_style')) ? $this->lang('change_style') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'change_style'))) . '         }')) . '</a>
+					';// ENDIF
+}
+// IF S_GLOBAL_RSSFEEDS
+if ($this->_data['.'][0]['S_GLOBAL_RSSFEEDS']) { 
+echo '
+					<div class="rss-tooltip-container">
+						<a class="rss-tooltip-trigger tooltip-trigger" data-tooltip="rss-tooltip"><i class="fa hand fa-rss fa-lg"></i></a>
+						<ul class="dropdown-menu right-bottom rss-tooltip" role="menu" id="rss-tooltip">
+							';// BEGIN global_rss_row
+$_global_rss_row_count = (isset($this->_data['global_rss_row.'])) ?  sizeof($this->_data['global_rss_row.']) : 0;
+if ($_global_rss_row_count) {
+for ($_global_rss_row_i = 0; $_global_rss_row_i < $_global_rss_row_count; $_global_rss_row_i++)
+{
+echo '
+							<li><a href="' . ((isset($this->_data['global_rss_row.'][$_global_rss_row_i]['LINK'])) ? $this->_data['global_rss_row.'][$_global_rss_row_i]['LINK'] : '') . '"><i class="fa hand fa-rss fa-lg"></i> ' . ((isset($this->_data['global_rss_row.'][$_global_rss_row_i]['NAME'])) ? $this->_data['global_rss_row.'][$_global_rss_row_i]['NAME'] : '') . '</a></li>
+							';}}
+// END global_rss_row
+echo '
+						</ul>
+					</div>
+					';// ENDIF
+}
+echo '
+				</div>
+			</footer>
+		</section>
+		
+		<footer id="footer">
+				';echo '
+				<div class="portal_block2">' . ((isset($this->_data['.'][0]['PORTAL_BLOCK2'])) ? $this->_data['.'][0]['PORTAL_BLOCK2'] : '') . '</div>
+				' . ((isset($this->_data['.'][0]['EQDKP_PLUS_COPYRIGHT'])) ? $this->_data['.'][0]['EQDKP_PLUS_COPYRIGHT'] : '') . '
+				';echo '
+		</footer>';echo '<!-- close footer -->';echo '
+	</div>';echo '<!-- close wrapper -->';// ELSE
+} else {
+// IF S_SHOW_QUERIES
+if ($this->_data['.'][0]['S_SHOW_QUERIES']) { 
+echo '<br />' . ((isset($this->_data['.'][0]['DEBUG_TABS'])) ? $this->_data['.'][0]['DEBUG_TABS'] : '') . '';// ENDIF
+}
+// ENDIF
+}
+// IF not S_LOGGED_IN
+if (! $this->_data['.'][0]['S_LOGGED_IN']) { 
+echo '
+	<div id="dialog-login" title="' . ((isset($this->_data['.'][0]['L_login'])) ? $this->_data['.'][0]['L_login'] : (($this->lang('login')) ? $this->lang('login') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'login'))) . '         }')) . '">
+		<form method="post" action="' . ((isset($this->_data['.'][0]['EQDKP_CONTROLLER_PATH'])) ? $this->_data['.'][0]['EQDKP_CONTROLLER_PATH'] : '') . 'Login' . ((isset($this->_data['.'][0]['SEO_EXTENSION'])) ? $this->_data['.'][0]['SEO_EXTENSION'] : '') . '' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '" name="login" id="login" class="fv_checkit">
+			';// IF S_BRIDGE_INFO
+if ($this->_data['.'][0]['S_BRIDGE_INFO']) { 
+echo '
+			<div class="infobox infobox-large infobox-blue clearfix">
+				<i class="fa fa-info-circle fa-4x pull-left"></i> ' . ((isset($this->_data['.'][0]['L_login_bridge_notice'])) ? $this->_data['.'][0]['L_login_bridge_notice'] : (($this->lang('login_bridge_notice')) ? $this->lang('login_bridge_notice') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'login_bridge_notice'))) . '         }')) . '
+			</div>
+			';// ENDIF
+}
+echo '
+			<fieldset class="settings mediumsettings">
+				<dl>
+					<dt><label>' . ((isset($this->_data['.'][0]['L_username'])) ? $this->_data['.'][0]['L_username'] : (($this->lang('username')) ? $this->lang('username') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'username'))) . '         }')) . ':</label></dt>
+					<dd>
+						<div class="input-icon">
+							<i class="fa fa-user"></i><input type="text" name="username" size="30" maxlength="30" class="input username" id="username" placeholder="' . ((isset($this->_data['.'][0]['L_username'])) ? $this->_data['.'][0]['L_username'] : (($this->lang('username')) ? $this->lang('username') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'username'))) . '         }')) . '" required />
+							<div class="fv_msg" data-errormessage="' . ((isset($this->_data['.'][0]['L_fv_required_user'])) ? $this->_data['.'][0]['L_fv_required_user'] : (($this->lang('fv_required_user')) ? $this->lang('fv_required_user') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'fv_required_user'))) . '         }')) . '"></div>
+						</div>
+						
+					</dd>
+				</dl>
+				<dl>
+					<dt><label>' . ((isset($this->_data['.'][0]['L_password'])) ? $this->_data['.'][0]['L_password'] : (($this->lang('password')) ? $this->lang('password') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'password'))) . '         }')) . ':</label></dt>
+					<dd>
+						<div class="input-icon">
+							<i class="fa fa-key"></i>
+							<input type="password" name="password" pattern=".{3,}" size="30" maxlength="32" class="input password" id="password" placeholder="' . ((isset($this->_data['.'][0]['L_password'])) ? $this->_data['.'][0]['L_password'] : (($this->lang('password')) ? $this->lang('password') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'password'))) . '         }')) . '" required />
+							<div class="fv_msg" data-errormessage="' . ((isset($this->_data['.'][0]['L_fv_required_password_pattern'])) ? $this->_data['.'][0]['L_fv_required_password_pattern'] : (($this->lang('fv_required_password_pattern')) ? $this->lang('fv_required_password_pattern') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'fv_required_password_pattern'))) . '         }')) . '"></div>
+						</div>
+						';// IF S_SHOW_PWRESET_LINK
+if ($this->_data['.'][0]['S_SHOW_PWRESET_LINK']) { 
+echo '
+						<br />' . ((isset($this->_data['.'][0]['U_PWRESET_LINK'])) ? $this->_data['.'][0]['U_PWRESET_LINK'] : '') . '<br />
+						';// ENDIF
+}
+echo '
+						<br /><label><input type="checkbox" name="auto_login" />' . ((isset($this->_data['.'][0]['L_remember_password'])) ? $this->_data['.'][0]['L_remember_password'] : (($this->lang('remember_password')) ? $this->lang('remember_password') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'remember_password'))) . '         }')) . '</label>
+					</dd>
+				</dl>
+			</fieldset>
+			<input type="text" name="' . ((isset($this->_data['.'][0]['HONEYPOT_VALUE'])) ? $this->_data['.'][0]['HONEYPOT_VALUE'] : '') . '" size="30" maxlength="30" class="userpass" />
+			<button type="submit" name="login" class="mainoption"><i class="fa fa-sign-in"></i> ' . ((isset($this->_data['.'][0]['L_login'])) ? $this->_data['.'][0]['L_login'] : (($this->lang('login')) ? $this->lang('login') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'login'))) . '         }')) . '</button>
+			';// IF AUTH_LOGIN_BUTTON != ""
+if ($this->_data['.'][0]['AUTH_LOGIN_BUTTON'] != "") { 
+echo '
+			<br /><br />
+			<fieldset class="settings mediumsettings">
+				<legend>' . ((isset($this->_data['.'][0]['L_login_use_authmethods'])) ? $this->_data['.'][0]['L_login_use_authmethods'] : (($this->lang('login_use_authmethods')) ? $this->lang('login_use_authmethods') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'login_use_authmethods'))) . '         }')) . '</legend>
+				' . ((isset($this->_data['.'][0]['AUTH_LOGIN_BUTTON'])) ? $this->_data['.'][0]['AUTH_LOGIN_BUTTON'] : '') . '
+			</fieldset>
+			';// ENDIF
+}
+echo '
+		</form>
+	</div>
+	';// ENDIF
+}
+echo '
+	
+	<div class="reponsiveTestClass" style="display:none;">';echo '<!-- This div is for testing the responsiveness -->';echo '</div>
+	<script type="text/javascript">
+		//<![CDATA[			
+			';// IF not S_LOGGED_IN
+if (! $this->_data['.'][0]['S_LOGGED_IN']) { 
+echo '
+			$(document).ready(function() {
+				/* Login Dialog */
+				$( "#dialog-login" ).dialog({
+					height: ';// IF S_BRIDGE_INFO
+if ($this->_data['.'][0]['S_BRIDGE_INFO']) { 
+echo '450';// ELSE
+} else {
+echo '350';// ENDIF
+}
+echo ',
+					width: 530,
+					modal: true,
+					autoOpen: false,
+				});
+			});
+			';// ENDIF
+}
+// IF S_NORMAL_HEADER
+if ($this->_data['.'][0]['S_NORMAL_HEADER']) { 
+echo '
+			
+			function recalculate_notification_bubbles(){
+				var red = 0; var green = 0; var yellow = 0;
+				$(\'.notification-content ul li\').each(function( index ) {
+					var myclass = $(this).attr(\'class\');
+					var count = $(this).data(\'count\');
+					
+					if (myclass == \'prio_0\') green += parseInt(count);
+					if(myclass == \'prio_1\') yellow += parseInt(count);
+					if(myclass == \'prio_2\') red += parseInt(count);
+				});
+				if (green > 0) {
+					$(\'.notification-bubble-green\').html(green).show();
+				} else {
+					$(\'.notification-bubble-green\').html(green).hide();
+				}
+				if (yellow > 0) {
+					$(\'.notification-bubble-yellow\').html(yellow).show();
+				} else {
+					$(\'.notification-bubble-yellow\').html(yellow).hide();
+				}
+				if (red > 0) {
+					$(\'.notification-bubble-red\').html(red).show();
+				} else {
+					$(\'.notification-bubble-red\').html(red).hide();
+				}
+				
+				if (yellow ==0 && green==0 && red==0){
+					$(\'.notification-content ul\').html('.$this->handleModifier('' . ((isset($this->_data['.'][0]['L_notification_none'])) ? $this->_data['.'][0]['L_notification_none'] : (($this->lang('notification_none')) ? $this->lang('notification_none') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'notification_none'))) . '         }')) . '', 'jsencode').');
+				}
+				
+				notification_favicon(red, yellow, green);
+			}
+			
+
+			function change_style(){
+				$(\'<div>\').html(\'<div class="style-switch-container"><i class="fa fa-lg fa-spin fa-spinner"></i></div>\').dialog(
+					{ open: function( event, ui ) {
+						$.get("' . ((isset($this->_data['.'][0]['EQDKP_ROOT_PATH'])) ? $this->_data['.'][0]['EQDKP_ROOT_PATH'] : '') . 'exchange.php' . ((isset($this->_data['.'][0]['SID'])) ? $this->_data['.'][0]['SID'] : '') . '&out=styles", function(data){
+							$(\'.style-switch-container\').html(data);
+						});
+					}, title: '.$this->handleModifier('' . ((isset($this->_data['.'][0]['L_change_style'])) ? $this->_data['.'][0]['L_change_style'] : (($this->lang('change_style')) ? $this->lang('change_style') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'change_style'))) . '         }')) . '', 'jsencode').', width: 600, height: 500}
+				);
+			}
+			
+			/* User clock */
+			var user_clock_format = "dddd, "+mmocms_user_dateformat_long+" "+ mmocms_user_timeformat;
+			var mymoment = moment(mmocms_user_timestamp_atom).utcOffset(mmocms_user_timezone);
+			
+			$(document).ready(function() {
+				$(\'.notification-mark-all-read\').on(\'click\', function() {
+				    $(\'.notification-content ul\').html('.$this->handleModifier('' . ((isset($this->_data['.'][0]['L_notification_none'])) ? $this->_data['.'][0]['L_notification_none'] : (($this->lang('notification_none')) ? $this->lang('notification_none') : '{ ' . ucfirst(strtolower(str_replace('_', ' ', 'notification_none'))) . '         }')) . '', 'jsencode').');
+					$(\'.notification-bubble-red, .notification-bubble-yellow, .notification-bubble-green\').hide();
+					notification_favicon(0, 0, 0);
+					$.get(mmocms_controller_path+"Notifications"+mmocms_seo_extension+mmocms_sid+"&markallread");
+				});
+	
+				//Update Favicon
+				favicon = new Favico({animation:\'none\'});
+				notification_favicon(' . ((isset($this->_data['.'][0]['NOTIFICATION_COUNT_RED'])) ? $this->_data['.'][0]['NOTIFICATION_COUNT_RED'] : '') . ', ' . ((isset($this->_data['.'][0]['NOTIFICATION_COUNT_YELLOW'])) ? $this->_data['.'][0]['NOTIFICATION_COUNT_YELLOW'] : '') . ', ' . ((isset($this->_data['.'][0]['NOTIFICATION_COUNT_GREEN'])) ? $this->_data['.'][0]['NOTIFICATION_COUNT_GREEN'] : '') . ');
+			});
+			';// ELSE
+} else {
+echo '<!-- JS for simple header. Above is for normal header only -->';// ENDIF
+}
+echo '
+
+		' . ((isset($this->_data['.'][0]['JS_CODE_EOP'])) ? $this->_data['.'][0]['JS_CODE_EOP'] : '') . '
+		
+		//Reset Favicon, for Bookmarks
+		$(window).on(\'unload\', function() {
+            if (typeof favicon !== \'undefined\'){ favicon.reset(); }
+   		 });
+   		 //]]>
+	</script>
+	' . ((isset($this->_data['.'][0]['FOOTER_CODE'])) ? $this->_data['.'][0]['FOOTER_CODE'] : '') . '
+	';echo '
+	<a id="bottom"></a>
+	</body>
+</html>
+';// ENDIF
+}
+
+}
+?>

@@ -1,0 +1,10 @@
+[25-Dec-2016 14:22:08 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, null given in /home/mtechnik81/public_html/core/data_handler/includes/modules/read/profile_fields/pdh_r_profile_fields.class.php on line 123
+[25-Dec-2016 14:22:08 UTC] PHP Notice:  Undefined index: css_code in /home/mtechnik81/public_html/libraries/template/template.class.php on line 227
+[25-Dec-2016 14:22:08 UTC] PHP Notice:  Undefined index: css_file in /home/mtechnik81/public_html/libraries/template/template.class.php on line 237
+[25-Dec-2016 14:22:08 UTC] PHP Notice:  Undefined index: css_file in /home/mtechnik81/public_html/libraries/template/template.class.php on line 261
+[25-Dec-2016 14:22:08 UTC] PHP Notice:  Undefined index: js_file in /home/mtechnik81/public_html/libraries/template/template.class.php on line 377
+[25-Dec-2016 14:22:18 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, null given in /home/mtechnik81/public_html/core/data_handler/includes/modules/read/profile_fields/pdh_r_profile_fields.class.php on line 123
+[25-Dec-2016 14:22:18 UTC] PHP Notice:  Undefined index: css_code in /home/mtechnik81/public_html/libraries/template/template.class.php on line 227
+[25-Dec-2016 14:22:18 UTC] PHP Notice:  Undefined index: css_file in /home/mtechnik81/public_html/libraries/template/template.class.php on line 237
+[25-Dec-2016 14:22:18 UTC] PHP Notice:  Undefined index: css_file in /home/mtechnik81/public_html/libraries/template/template.class.php on line 261
+[25-Dec-2016 14:22:18 UTC] PHP Notice:  Undefined index: js_file in /home/mtechnik81/public_html/libraries/template/template.class.php on line 377

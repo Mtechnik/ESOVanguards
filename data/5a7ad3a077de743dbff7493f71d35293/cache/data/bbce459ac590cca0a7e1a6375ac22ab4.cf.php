@@ -1,0 +1,1 @@
+a:9:{s:6:"system";i:1;s:4:"news";i:2;s:6:"events";i:3;s:5:"items";i:4;s:5:"raids";i:5;s:8:"calendar";i:6;s:6:"roster";i:7;s:6:"points";i:8;s:9:"character";i:9;}

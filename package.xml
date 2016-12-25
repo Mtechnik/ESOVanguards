@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install type="language" version="2.2.0.4">
+	<folder>russian</folder>
+	<name>Russian</name>
+	<author>Shader</author>
+	<authorEmail>shader@dautkom.lv</authorEmail>
+	<creationDate>1465978610</creationDate>
+	<copyright>(C)2016 Shader</copyright>
+	<version>2.2.7.0</version>
+	<level>stable</level>
+</install>

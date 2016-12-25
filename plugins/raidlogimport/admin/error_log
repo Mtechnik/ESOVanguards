@@ -1,0 +1,8 @@
+[25-Dec-2016 14:52:37 UTC] PHP Notice:  Undefined index: S_MYCHARS_POINTS in /home/mtechnik81/public_html/data/5a7ad3a077de743dbff7493f71d35293/cache/template/eqdkp_modern/fbfd6b8e4_body_settings.html.php on line 268
+[25-Dec-2016 14:52:37 UTC] PHP Notice:  Undefined index: S_SHOW_COOKIE_HINT in /home/mtechnik81/public_html/data/5a7ad3a077de743dbff7493f71d35293/cache/template/eqdkp_modern/fbfd6b8e4_body_settings.html.php on line 506
+[25-Dec-2016 14:52:37 UTC] PHP Notice:  Undefined index: S_GERMAN in /home/mtechnik81/public_html/data/5a7ad3a077de743dbff7493f71d35293/cache/template/eqdkp_modern/fbfd6b8e4_body_settings.html.php on line 572
+[25-Dec-2016 14:52:37 UTC] PHP Notice:  Undefined index: S_GLOBAL_RSSFEEDS in /home/mtechnik81/public_html/data/5a7ad3a077de743dbff7493f71d35293/cache/template/eqdkp_modern/fbfd6b8e4_body_settings.html.php on line 708
+[25-Dec-2016 14:52:53 UTC] PHP Notice:  Undefined index: S_MYCHARS_POINTS in /home/mtechnik81/public_html/data/5a7ad3a077de743dbff7493f71d35293/cache/template/eqdkp_modern/fbfd6b8e4_body_settings.html.php on line 268
+[25-Dec-2016 14:52:53 UTC] PHP Notice:  Undefined index: S_SHOW_COOKIE_HINT in /home/mtechnik81/public_html/data/5a7ad3a077de743dbff7493f71d35293/cache/template/eqdkp_modern/fbfd6b8e4_body_settings.html.php on line 506
+[25-Dec-2016 14:52:53 UTC] PHP Notice:  Undefined index: S_GERMAN in /home/mtechnik81/public_html/data/5a7ad3a077de743dbff7493f71d35293/cache/template/eqdkp_modern/fbfd6b8e4_body_settings.html.php on line 572
+[25-Dec-2016 14:52:53 UTC] PHP Notice:  Undefined index: S_GLOBAL_RSSFEEDS in /home/mtechnik81/public_html/data/5a7ad3a077de743dbff7493f71d35293/cache/template/eqdkp_modern/fbfd6b8e4_body_settings.html.php on line 708
